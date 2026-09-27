@@ -1,19 +1,17 @@
 <?php
 
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\MangaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+/*
+|--------------------------------------------------------------------------
+| Routes protégées
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('auth')->group(function () {
 
@@ -23,9 +21,11 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/collection', [CollectionController::class, 'index'])
+    // Page principale = collection
+    Route::get('/', [CollectionController::class, 'index'])
         ->name('collection.index');
 
+    // Fiche d'une licence
     Route::get('/collection/{manga}', [CollectionController::class, 'show'])
         ->name('collection.show');
 
@@ -36,14 +36,32 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
+    // Formulaire d'ajout
     Route::get('/tomes/create', [TomeController::class, 'create'])
         ->name('tomes.create');
 
+    // Ajouter un exemplaire
     Route::post('/tomes', [TomeController::class, 'store'])
         ->name('tomes.store');
 
+    // Supprimer un exemplaire
     Route::delete('/tomes/{tome}', [TomeController::class, 'destroy'])
         ->name('tomes.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Licences
+    |--------------------------------------------------------------------------
+    */
+
+    // Formulaire nouvelle licence
+    Route::get('/licences/create', [MangaController::class, 'create'])
+        ->name('mangas.create');
+
+    // Enregistrer la nouvelle licence
+    Route::post('/licences', [MangaController::class, 'store'])
+        ->name('mangas.store');
 
 
     /*
@@ -61,5 +79,25 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/dashboard', function () {
+    return redirect()->route('collection.index');
+})
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+
+/*
+|--------------------------------------------------------------------------
+| Auth
+|--------------------------------------------------------------------------
+*/
 
 require __DIR__.'/auth.php';

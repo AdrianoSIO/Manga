@@ -8,24 +8,28 @@ use Illuminate\Http\Request;
 
 class TomeController extends Controller
 {
-    /**
-     * Formulaire d'ajout d'un tome.
-     */
     public function create()
     {
+        // On ne peut choisir qu'une licence qui existe déjà
         $mangas = Manga::orderBy('titre')->get();
 
         return view('tomes.create', compact('mangas'));
     }
 
-    /**
-     * Ajoute un exemplaire physique.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'manga_id' => ['required', 'exists:mangas,id'],
-            'numero' => ['required', 'integer', 'min:0'],
+            'manga_id' => [
+                'required',
+                'integer',
+                'exists:mangas,id',
+            ],
+
+            'numero' => [
+                'required',
+                'integer',
+                'min:0',
+            ],
         ]);
 
         Tome::create([
@@ -39,9 +43,6 @@ class TomeController extends Controller
             ->with('success', 'Tome ajouté à ta collection.');
     }
 
-    /**
-     * Supprime UN exemplaire physique.
-     */
     public function destroy(Request $request, Tome $tome)
     {
         abort_unless(
@@ -51,7 +52,9 @@ class TomeController extends Controller
 
         $tome->delete();
 
-        return back()
-            ->with('success', 'Exemplaire supprimé de ta collection.');
+        return back()->with(
+            'success',
+            'Exemplaire supprimé de ta collection.'
+        );
     }
 }

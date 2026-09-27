@@ -13,6 +13,9 @@ class Genre extends Model
 
     public function mangas(): BelongsToMany
     {
-        return $this->belongsToMany(Manga::class, 'genre_manga');
+        return $this->belongsToMany(
+            Manga::class,
+            'genre_manga'
+        );
     }
 }

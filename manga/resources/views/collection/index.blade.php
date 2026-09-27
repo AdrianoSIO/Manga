@@ -25,15 +25,38 @@
                 </h2>
             </div>
 
-            <a
-                href="{{ route('tomes.create') }}"
-                class="flex w-full items-center justify-center rounded-lg
-                       bg-red-600 px-5 py-3 text-sm font-bold text-white
-                       transition hover:bg-red-700
-                       sm:w-auto sm:py-2.5"
-            >
-                + Ajouter un tome
-            </a>
+
+            {{-- Actions --}}
+            <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+
+                {{-- Nouvelle licence --}}
+                <a
+                    href="{{ route('mangas.create') }}"
+                    class="flex w-full items-center justify-center rounded-lg
+                           border border-gray-300 bg-white px-5 py-3
+                           text-sm font-bold text-gray-700 transition
+                           hover:border-red-300 hover:bg-red-50 hover:text-red-600
+                           sm:w-auto sm:py-2.5"
+                >
+                    <span class="mr-2 text-red-600">＋</span>
+                    Nouvelle licence
+                </a>
+
+
+                {{-- Ajouter un tome --}}
+                <a
+                    href="{{ route('tomes.create') }}"
+                    class="flex w-full items-center justify-center rounded-lg
+                           bg-red-600 px-5 py-3
+                           text-sm font-bold text-white transition
+                           hover:bg-red-700
+                           sm:w-auto sm:py-2.5"
+                >
+                    <span class="mr-2">＋</span>
+                    Ajouter un tome
+                </a>
+
+            </div>
 
         </div>
 
@@ -54,7 +77,7 @@
             @if (session('success'))
 
                 <div
-                    class="mb-5 rounded-lg border border-green-200
+                    class="mb-5 rounded-xl border border-green-200
                            bg-green-50 p-4 text-sm font-medium text-green-800"
                 >
                     {{ session('success') }}
@@ -209,13 +232,11 @@
                 <div class="mt-2 flex items-center justify-between">
 
                     <p class="text-xs text-gray-400">
-
                         <span id="visible-count">
                             {{ $mangas->count() }}
                         </span>
 
                         résultat(s)
-
                     </p>
 
 
@@ -303,19 +324,39 @@
                             {{-- =================================
                                 TITRE DU MANGA
                             ================================== --}}
-                            <h3
-                                class="break-words text-lg font-black
-                                       leading-tight text-gray-900 sm:text-xl"
-                            >
+                            <div class="flex items-start justify-between gap-3">
+
+                                <h3
+                                    class="min-w-0 break-words text-lg font-black
+                                           leading-tight text-gray-900 sm:text-xl"
+                                >
+
+                                    <a
+                                        href="{{ route('collection.show', $manga) }}"
+                                        class="transition group-hover:text-red-600"
+                                    >
+                                        {{ $manga->titre }}
+                                    </a>
+
+                                </h3>
+
 
                                 <a
-                                    href="{{ route('collection.show', $manga) }}"
-                                    class="transition group-hover:text-red-600"
+                                    href="{{ route('tomes.create', ['manga' => $manga->id]) }}"
+                                    title="Ajouter un tome de {{ $manga->titre }}"
+                                    class="flex h-9 w-9 shrink-0 items-center
+                                           justify-center rounded-lg
+                                           border border-gray-200 bg-gray-50
+                                           text-lg font-black text-gray-500
+                                           transition
+                                           hover:border-red-600
+                                           hover:bg-red-600
+                                           hover:text-white"
                                 >
-                                    {{ $manga->titre }}
+                                    ＋
                                 </a>
 
-                            </h3>
+                            </div>
 
 
                             {{-- =================================
@@ -339,6 +380,12 @@
                                     @endforeach
 
                                 </div>
+
+                            @else
+
+                                <p class="mt-3 text-xs text-gray-400">
+                                    Aucun genre renseigné
+                                </p>
 
                             @endif
 
@@ -403,6 +450,28 @@
 
 
                             {{-- =================================
+                                LÉGENDE DOUBLONS
+                            ================================== --}}
+                            @if (
+                                $manga->tomes
+                                    ->groupBy('numero')
+                                    ->contains(fn ($tomes) => $tomes->count() > 1)
+                            )
+
+                                <div class="mt-3 flex items-center gap-2">
+
+                                    <span class="h-2 w-2 rounded-full bg-red-600"></span>
+
+                                    <span class="text-[11px] font-medium text-gray-400">
+                                        Plusieurs exemplaires
+                                    </span>
+
+                                </div>
+
+                            @endif
+
+
+                            {{-- =================================
                                 FOOTER
                             ================================== --}}
                             <div
@@ -453,21 +522,30 @@
                             Collection vide
                         </h3>
 
-                        <p class="mt-2 text-sm text-gray-500">
-                            Aucun manga dans ta collection.
+                        <p class="mx-auto mt-2 max-w-md text-sm text-gray-500">
+                            Commence par créer une licence.
+                            Tu pourras ensuite ajouter les tomes que tu possèdes.
                         </p>
 
-                        <a
-                            href="{{ route('tomes.create') }}"
-                            class="mt-6 inline-flex w-full
-                                   items-center justify-center
-                                   rounded-lg bg-red-600
-                                   px-5 py-3 text-sm font-bold
-                                   text-white transition
-                                   hover:bg-red-700 sm:w-auto"
+
+                        <div
+                            class="mt-6 flex flex-col justify-center gap-2
+                                   sm:flex-row"
                         >
-                            + Ajouter mon premier tome
-                        </a>
+
+                            <a
+                                href="{{ route('mangas.create') }}"
+                                class="inline-flex w-full items-center
+                                       justify-center rounded-lg
+                                       bg-red-600 px-5 py-3
+                                       text-sm font-bold text-white
+                                       transition hover:bg-red-700
+                                       sm:w-auto"
+                            >
+                                ＋ Ajouter ma première licence
+                            </a>
+
+                        </div>
 
                     </div>
 
@@ -560,6 +638,7 @@
             |   L’attaque des titans
             |
             */
+
             function normalize(value) {
 
                 return String(value ?? '')
@@ -576,6 +655,7 @@
             | Filtrage
             |--------------------------------------------------------------------------
             */
+
             function filterMangas() {
 
                 const search =
@@ -659,6 +739,7 @@
             | Recherche instantanée
             |--------------------------------------------------------------------------
             */
+
             searchInput.addEventListener(
                 'input',
                 filterMangas
@@ -670,6 +751,7 @@
             | Filtres genres
             |--------------------------------------------------------------------------
             */
+
             genreButtons.forEach(button => {
 
                 button.addEventListener('click', () => {
@@ -725,6 +807,7 @@
             | Reset
             |--------------------------------------------------------------------------
             */
+
             function resetFilters() {
 
                 searchInput.value = '';
@@ -791,6 +874,7 @@
             | État initial
             |--------------------------------------------------------------------------
             */
+
             filterMangas();
 
         });
