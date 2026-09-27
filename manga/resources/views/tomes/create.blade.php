@@ -1,7 +1,7 @@
 <x-app-layout>
 
     <x-slot name="title">
-        Ajouter un tome
+        Ajouter des tomes
     </x-slot>
 
     <x-slot name="header">
@@ -14,7 +14,7 @@
                 </p>
 
                 <h1 class="mt-1 text-xl font-black text-gray-900 sm:text-2xl">
-                    Ajouter un tome
+                    Ajouter des tomes
                 </h1>
             </div>
 
@@ -51,8 +51,7 @@
             {{-- Erreurs --}}
             @if ($errors->any())
 
-                <div class="mb-5 rounded-xl border border-red-200
-                            bg-red-50 p-4">
+                <div class="mb-5 rounded-xl border border-red-200 bg-red-50 p-4">
 
                     <p class="font-bold text-red-800">
                         Vérifie le formulaire
@@ -109,7 +108,7 @@
 
                                 <p class="mt-2 text-sm text-gray-500">
                                     Tu dois créer une licence avant de pouvoir
-                                    ajouter un tome.
+                                    ajouter des tomes.
                                 </p>
 
                                 <a
@@ -144,8 +143,7 @@
                                     <option
                                         value="{{ $manga->id }}"
                                         @selected(
-                                            old('manga_id', request('manga'))
-                                            == $manga->id
+                                            old('manga_id', request('manga')) == $manga->id
                                         )
                                     >
                                         {{ $manga->titre }}
@@ -181,52 +179,114 @@
 
 
                     {{-- =========================================
-                        NUMÉRO DU TOME
+                        NUMÉROS DES TOMES
                     ========================================== --}}
                     @if ($mangas->isNotEmpty())
 
                         <div>
 
                             <label
-                                for="numero"
+                                for="numeros"
                                 class="mb-2 block text-sm font-bold text-gray-900"
                             >
-                                Numéro du tome
+                                Numéro(s) des tomes
                             </label>
 
                             <input
-                                id="numero"
-                                name="numero"
-                                type="number"
-                                min="0"
-                                inputmode="numeric"
+                                id="numeros"
+                                name="numeros"
+                                type="text"
                                 required
-                                value="{{ old('numero') }}"
-                                placeholder="Ex : 12"
+                                autocomplete="off"
+                                value="{{ old('numeros') }}"
+                                placeholder="Ex : 1,2,3,5-10,12"
                                 class="w-full rounded-xl border-gray-300
                                        focus:border-red-500 focus:ring-red-500"
                             >
 
-                            @error('numero')
+                            @error('numeros')
                                 <p class="mt-2 text-sm font-medium text-red-600">
                                     {{ $message }}
                                 </p>
                             @enderror
 
 
-                            <div class="mt-3 rounded-lg bg-gray-50 p-3">
+                            {{-- Exemples --}}
+                            <div class="mt-4 rounded-xl border border-gray-100 bg-gray-50 p-4">
 
-                                <p class="text-xs leading-relaxed text-gray-500">
-                                    Les genres sont liés à la licence.
-                                    Tu n'as donc pas besoin de les sélectionner
-                                    à nouveau.
+                                <p class="text-xs font-black uppercase
+                                          tracking-[0.15em] text-gray-700">
+                                    Formats acceptés
                                 </p>
 
-                                <p class="mt-1 text-xs leading-relaxed text-gray-500">
-                                    Plusieurs exemplaires du même tome sont autorisés.
+                                <div class="mt-3 grid gap-2 text-xs text-gray-500 sm:grid-cols-2">
+
+                                    <div class="rounded-lg bg-white p-3">
+                                        <p class="font-bold text-gray-800">
+                                            Un tome
+                                        </p>
+
+                                        <p class="mt-1 font-mono text-red-600">
+                                            12
+                                        </p>
+                                    </div>
+
+
+                                    <div class="rounded-lg bg-white p-3">
+                                        <p class="font-bold text-gray-800">
+                                            Plusieurs tomes
+                                        </p>
+
+                                        <p class="mt-1 font-mono text-red-600">
+                                            1,2,3,4,5
+                                        </p>
+                                    </div>
+
+
+                                    <div class="rounded-lg bg-white p-3">
+                                        <p class="font-bold text-gray-800">
+                                            Une série
+                                        </p>
+
+                                        <p class="mt-1 font-mono text-red-600">
+                                            10-15
+                                        </p>
+                                    </div>
+
+
+                                    <div class="rounded-lg bg-white p-3">
+                                        <p class="font-bold text-gray-800">
+                                            Mélange
+                                        </p>
+
+                                        <p class="mt-1 font-mono text-red-600">
+                                            1,2,5-10,12
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            {{-- Doublons --}}
+                            <div class="mt-3 rounded-lg border border-red-100 bg-red-50 p-3">
+
+                                <p class="text-xs leading-relaxed text-red-700">
+                                    <strong>Doublons autorisés :</strong>
+                                    écrire
+                                    <span class="font-mono font-bold">
+                                        3,3
+                                    </span>
+                                    ajoutera deux exemplaires du tome 3.
                                 </p>
 
                             </div>
+
+
+                            <p class="mt-3 text-xs leading-relaxed text-gray-500">
+                                Les genres sont automatiquement ceux de la licence sélectionnée.
+                            </p>
 
                         </div>
 
@@ -258,7 +318,7 @@
                                        text-white transition
                                        hover:bg-red-700 sm:w-auto"
                             >
-                                Ajouter le tome
+                                Ajouter à ma collection
                             </button>
 
                         </div>
