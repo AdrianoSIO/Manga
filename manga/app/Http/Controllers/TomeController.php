@@ -35,7 +35,7 @@ class TomeController extends Controller
         ]);
 
         return redirect()
-            ->route('collection.index')
+            ->route('collection.show', $validated['manga_id'])
             ->with('success', 'Tome ajouté à ta collection.');
     }
 
@@ -51,9 +51,7 @@ class TomeController extends Controller
 
         $tome->delete();
 
-        return back()->with(
-            'success',
-            'Exemplaire supprimé de ta collection.'
-        );
+        return back()
+            ->with('success', 'Exemplaire supprimé de ta collection.');
     }
 }
