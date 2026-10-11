@@ -30,7 +30,6 @@
         </div>
     </x-slot>
 
-
     <div class="py-10">
 
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -42,7 +41,6 @@
                     {{ session('success') }}
                 </div>
             @endif
-
 
             {{-- Informations manga --}}
             <div class="mb-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm
@@ -66,7 +64,6 @@
 
                         </div>
 
-
                         <div class="rounded-xl bg-gray-900 px-6 py-4 text-white dark:bg-zinc-800">
 
                             <div class="text-3xl font-black">
@@ -80,7 +77,6 @@
                         </div>
 
                     </div>
-
 
                     {{-- Genres --}}
                     <div class="mt-6 border-t border-gray-100 pt-6 dark:border-zinc-800">
@@ -114,7 +110,6 @@
 
             </div>
 
-
             {{-- Tomes --}}
             <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm
                         dark:border-zinc-700 dark:bg-[#18181b]">
@@ -141,7 +136,6 @@
 
                 </div>
 
-
                 <div class="divide-y divide-gray-100 dark:divide-zinc-800">
 
                     @forelse ($tomes as $tome)
@@ -157,7 +151,6 @@
                                     {{ $tome->numero }}
                                 </div>
 
-
                                 <div>
 
                                     <p class="font-bold text-gray-900 dark:text-zinc-100">
@@ -171,7 +164,6 @@
                                 </div>
 
                             </div>
-
 
                             {{-- Suppression --}}
                             <form

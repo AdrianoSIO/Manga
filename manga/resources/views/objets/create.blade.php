@@ -1,1001 +1,725 @@
 <x-app-layout>
 
-    <x-slot name="title">
+    <x-slot name="title">
 
-        Ajouter un objet
+        Ajouter un objet
 
-    </x-slot>
+    </x-slot>
 
+    <div
 
+        class="wishlist-create-page min-h-screen bg-[#f7f3eb] text-zinc-900 dark:text-zinc-100 transition-colors dark:bg-[#111113] dark:text-zinc-100"
 
-    <div
+        style="
 
-        class="wishlist-create-page min-h-screen bg-[#f7f3eb] text-zinc-900 dark:text-zinc-100 transition-colors dark:bg-[#111113] dark:text-zinc-100"
+            background-image:
 
-        style="
+                linear-gradient(rgba(24,24,27,.035) 1px, transparent 1px),
 
-            background-image:
+                linear-gradient(90deg, rgba(24,24,27,.035) 1px, transparent 1px);
 
-                linear-gradient(rgba(24,24,27,.035) 1px, transparent 1px),
+            background-size: 28px 28px;
 
-                linear-gradient(90deg, rgba(24,24,27,.035) 1px, transparent 1px);
+        "
 
-            background-size: 28px 28px;
+    >
 
-        "
+        <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
 
-    >
+            {{-- RETOUR --}}
 
-        <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+            <a
 
+                href="{{ route('objets.index') }}"
 
+                class="mb-6 inline-flex items-center gap-2 text-sm font-bold text-zinc-500 dark:text-zinc-400 dark:text-zinc-500 transition hover:text-red-600"
 
-            {{-- RETOUR --}}
+            >
 
-            <a
+                ← Retour à la wishlist
 
-                href="{{ route('objets.index') }}"
+            </a>
 
-                class="mb-6 inline-flex items-center gap-2 text-sm font-bold text-zinc-500 dark:text-zinc-400 dark:text-zinc-500 transition hover:text-red-600"
+            {{-- HEADER --}}
 
-            >
+            <div class="mb-8">
 
-                ← Retour à la wishlist
+                <div class="mb-3 flex items-center gap-3">
 
-            </a>
+                    <span class="bg-red-600 px-2 py-1 text-xs font-black uppercase tracking-[0.2em] text-white">
 
+                        欲しい物
 
+                    </span>
 
+                    <span class="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
 
+                        Nouvel objet
 
-            {{-- HEADER --}}
+                    </span>
 
-            <div class="mb-8">
+                </div>
 
+                <h1 class="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
 
+                    Ajouter un objet
 
-                <div class="mb-3 flex items-center gap-3">
+                </h1>
 
-                    <span class="bg-red-600 px-2 py-1 text-xs font-black uppercase tracking-[0.2em] text-white">
+                <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400 dark:text-zinc-500">
 
-                        欲しい物
+                    Ajoute un objet à suivre dans ta wishlist.
 
-                    </span>
+                </p>
 
+            </div>
 
+            {{-- ERREURS --}}
 
-                    <span class="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
+            @if ($errors->any())
 
-                        Nouvel objet
+                <div class="mb-6 border-2 border-red-600 bg-red-50 p-4 dark:bg-red-950/30 shadow-[4px_4px_0_#18181b] dark:shadow-[4px_4px_0_#52525b]">
 
-                    </span>
+                    <p class="mb-2 font-black text-red-700 dark:text-red-300">
 
-                </div>
+                        Vérifie les informations :
 
+                    </p>
 
+                    <ul class="list-inside list-disc space-y-1 text-sm font-medium text-red-700 dark:text-red-300">
 
-                <h1 class="text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
+                        @foreach ($errors->all() as $error)
 
-                    Ajouter un objet
+                            <li>{{ $error }}</li>
 
-                </h1>
+                        @endforeach
 
+                    </ul>
 
+                </div>
 
-                <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400 dark:text-zinc-500">
+            @endif
 
-                    Ajoute un objet à suivre dans ta wishlist.
+            {{-- FORMULAIRE --}}
 
-                </p>
+            <form
 
+                method="POST"
 
+                action="{{ route('objets.store') }}"
 
-            </div>
+                class="border-2 border-zinc-900 dark:border-zinc-600 bg-[#fffdf8] dark:bg-[#18181b] shadow-[6px_6px_0_#18181b] dark:shadow-[6px_6px_0_#52525b]"
 
+            >
 
+                @csrf
 
+                {{-- 01 IDENTITÉ --}}
 
+                <section class="border-b-2 border-zinc-900 dark:border-zinc-600 p-5 sm:p-7">
 
-            {{-- ERREURS --}}
+                    <div class="mb-5 flex items-center gap-3">
 
-            @if ($errors->any())
+                        <span class="flex h-8 w-8 items-center justify-center bg-zinc-900 text-xs font-black text-white">
 
-                <div class="mb-6 border-2 border-red-600 bg-red-50 p-4 dark:bg-red-950/30 shadow-[4px_4px_0_#18181b] dark:shadow-[4px_4px_0_#52525b]">
+                            01
 
+                        </span>
 
+                        <div>
 
-                    <p class="mb-2 font-black text-red-700 dark:text-red-300">
+                            <h2 class="font-black text-zinc-900 dark:text-zinc-100">
 
-                        Vérifie les informations :
+                                Objet
 
-                    </p>
+                            </h2>
 
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
 
+                                基本情報 · Informations principales
 
-                    <ul class="list-inside list-disc space-y-1 text-sm font-medium text-red-700 dark:text-red-300">
+                            </p>
 
-                        @foreach ($errors->all() as $error)
+                        </div>
 
-                            <li>{{ $error }}</li>
+                    </div>
 
-                        @endforeach
+                    <div class="grid gap-5 sm:grid-cols-2">
 
-                    </ul>
+                        {{-- NOM --}}
 
+                        <div class="sm:col-span-2">
 
+                            <label
 
-                </div>
+                                for="nom"
 
-            @endif
+                                class="mb-2 block text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
 
+                            >
 
+                                Nom de l'objet *
 
+                            </label>
 
+                            <input
 
-            {{-- FORMULAIRE --}}
+                                id="nom"
 
-            <form
+                                name="nom"
 
-                method="POST"
+                                type="text"
 
-                action="{{ route('objets.store') }}"
+                                value="{{ old('nom') }}"
 
-                class="border-2 border-zinc-900 dark:border-zinc-600 bg-[#fffdf8] dark:bg-[#18181b] shadow-[6px_6px_0_#18181b] dark:shadow-[6px_6px_0_#52525b]"
+                                required
 
-            >
+                                autofocus
 
-                @csrf
+                                placeholder="Ex : Résine Goku SSJ3"
 
+                                class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:text-zinc-500 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
 
+                            >
 
+                        </div>
 
+                        {{-- CATÉGORIE --}}
 
-                {{-- 01 IDENTITÉ --}}
+                        <div>
 
-                <section class="border-b-2 border-zinc-900 dark:border-zinc-600 p-5 sm:p-7">
+                            <label
 
+                                for="categorie"
 
+                                class="mb-2 block text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
 
-                    <div class="mb-5 flex items-center gap-3">
+                            >
 
+                                Catégorie
 
+                            </label>
 
-                        <span class="flex h-8 w-8 items-center justify-center bg-zinc-900 text-xs font-black text-white">
+                            <input
 
-                            01
+                                id="categorie"
 
-                        </span>
+                                name="categorie"
 
+                                type="text"
 
+                                value="{{ old('categorie') }}"
 
-                        <div>
+                                placeholder="Résine, Figurine, Collector..."
 
-                            <h2 class="font-black text-zinc-900 dark:text-zinc-100">
+                                class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:text-zinc-500 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
 
-                                Objet
+                            >
 
-                            </h2>
+                        </div>
 
+                        {{-- URL --}}
 
+                        <div>
 
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
+                            <label
 
-                                基本情報 · Informations principales
+                                for="url"
 
-                            </p>
+                                class="mb-2 block text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
 
-                        </div>
+                            >
 
+                                Lien du produit
 
+                            </label>
 
-                    </div>
+                            <input
 
+                                id="url"
 
+                                name="url"
 
+                                type="url"
 
+                                value="{{ old('url') }}"
 
-                    <div class="grid gap-5 sm:grid-cols-2">
+                                placeholder="https://..."
 
+                                class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:text-zinc-500 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
 
+                            >
 
-                        {{-- NOM --}}
+                        </div>
 
-                        <div class="sm:col-span-2">
+                    </div>
 
+                </section>
 
+                {{-- 02 PRIX --}}
 
-                            <label
+                <section class="border-b-2 border-zinc-900 dark:border-zinc-600 p-5 sm:p-7">
 
-                                for="nom"
+                    <div class="mb-5 flex items-center gap-3">
 
-                                class="mb-2 block text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
+                        <span class="flex h-8 w-8 items-center justify-center bg-zinc-900 text-xs font-black text-white">
 
-                            >
+                            02
 
-                                Nom de l'objet *
+                        </span>
 
-                            </label>
+                        <div>
 
+                            <h2 class="font-black text-zinc-900 dark:text-zinc-100">
 
+                                Prix
 
-                            <input
+                            </h2>
 
-                                id="nom"
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
 
-                                name="nom"
+                                価格 · Suivi du prix
 
-                                type="text"
+                            </p>
 
-                                value="{{ old('nom') }}"
+                        </div>
 
-                                required
+                    </div>
 
-                                autofocus
+                    <div class="grid gap-5 sm:grid-cols-2">
 
-                                placeholder="Ex : Résine Goku SSJ3"
+                        {{-- PRIX ACTUEL --}}
 
-                                class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:text-zinc-500 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
+                        <div>
 
-                            >
+                            <label
 
+                                for="prix"
 
+                                class="mb-2 block text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
 
-                        </div>
+                            >
 
+                                Prix actuel
 
+                            </label>
 
+                            <div class="relative">
 
+                                <input
 
-                        {{-- CATÉGORIE --}}
+                                    id="prix"
 
-                        <div>
+                                    name="prix"
 
+                                    type="number"
 
+                                    step="0.01"
 
-                            <label
+                                    min="0"
 
-                                for="categorie"
+                                    value="{{ old('prix') }}"
 
-                                class="mb-2 block text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
+                                    placeholder="349.90"
 
-                            >
+                                    class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 pr-12 text-sm font-black text-zinc-900 dark:text-zinc-100 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
 
-                                Catégorie
+                                >
 
-                            </label>
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 font-black text-zinc-400 dark:text-zinc-500">
 
+                                    €
 
+                                </span>
 
-                            <input
+                            </div>
 
-                                id="categorie"
+                        </div>
 
-                                name="categorie"
+                        {{-- PRIX CIBLE --}}
 
-                                type="text"
+                        <div>
 
-                                value="{{ old('categorie') }}"
+                            <label
 
-                                placeholder="Résine, Figurine, Collector..."
+                                for="prix_cible"
 
-                                class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:text-zinc-500 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
+                                class="mb-2 block text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
 
-                            >
+                            >
 
+                                Prix cible
 
+                            </label>
 
-                        </div>
+                            <div class="relative">
 
+                                <input
 
+                                    id="prix_cible"
 
+                                    name="prix_cible"
 
+                                    type="number"
 
-                        {{-- URL --}}
+                                    step="0.01"
 
-                        <div>
+                                    min="0"
 
+                                    value="{{ old('prix_cible') }}"
 
+                                    placeholder="280.00"
 
-                            <label
+                                    class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 pr-12 text-sm font-black text-zinc-900 dark:text-zinc-100 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
 
-                                for="url"
+                                >
 
-                                class="mb-2 block text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 font-black text-red-600">
 
-                            >
+                                    €
 
-                                Lien du produit
+                                </span>
 
-                            </label>
+                            </div>
 
+                            <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
 
+                                Le prix auquel tu aimerais acheter l'objet.
 
-                            <input
+                            </p>
 
-                                id="url"
+                        </div>
 
-                                name="url"
+                    </div>
 
-                                type="url"
+                </section>
 
-                                value="{{ old('url') }}"
+                {{-- 03 IMPORTANCE --}}
 
-                                placeholder="https://..."
+                <section class="border-b-2 border-zinc-900 dark:border-zinc-600 p-5 sm:p-7">
 
-                                class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:text-zinc-500 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
+                    <div class="mb-5 flex items-center gap-3">
 
-                            >
+                        <span class="flex h-8 w-8 items-center justify-center bg-zinc-900 text-xs font-black text-white">
 
+                            03
 
+                        </span>
 
-                        </div>
+                        <div>
 
+                            <h2 class="font-black text-zinc-900 dark:text-zinc-100">
 
+                                Priorité
 
-                    </div>
+                            </h2>
 
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
 
+                                優先度 · Niveau d'importance
 
-                </section>
+                            </p>
 
+                        </div>
 
+                    </div>
 
+                    <div class="grid grid-cols-4 gap-2 sm:grid-cols-7">
 
+                        @foreach (['SSS', 'SS', 'S', 'A', 'B', 'C', 'D'] as $rank)
 
-                {{-- 02 PRIX --}}
+                            <label class="cursor-pointer">
 
-                <section class="border-b-2 border-zinc-900 dark:border-zinc-600 p-5 sm:p-7">
+                                <input
 
+                                    type="radio"
 
+                                    name="importance"
 
-                    <div class="mb-5 flex items-center gap-3">
+                                    value="{{ $rank }}"
 
+                                    class="peer sr-only"
 
+                                    {{ old(*'importance',* *'C')* *===* $rank ? *'checked'* : *''* }}
 
-                        <span class="flex h-8 w-8 items-center justify-center bg-zinc-900 text-xs font-black text-white">
+                                >
 
-                            02
+                                <div class="flex h-14 items-center justify-center border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-lg font-black text-zinc-900 dark:text-zinc-100 transition hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:bg-zinc-800 peer-checked:bg-red-600 peer-checked:text-white dark:peer-checked:bg-red-600 dark:peer-checked:text-white">
 
-                        </span>
+                                    {{ $rank }}
 
+                                </div>
 
+                            </label>
 
-                        <div>
+                        @endforeach
 
-                            <h2 class="font-black text-zinc-900 dark:text-zinc-100">
+                    </div>
 
-                                Prix
+                    <div class="mt-3 flex justify-between text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
 
-                            </h2>
+                        <span>
 
+                            Priorité maximale
 
+                        </span>
 
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
+                        <span>
 
-                                価格 · Suivi du prix
+                            Faible priorité
 
-                            </p>
+                        </span>
 
-                        </div>
+                    </div>
 
+                </section>
 
+                {{-- 04 ÉTAT --}}
 
-                    </div>
+                <section class="border-b-2 border-zinc-900 dark:border-zinc-600 p-5 sm:p-7">
 
+                    <div class="mb-5 flex items-center gap-3">
 
+                        <span class="flex h-8 w-8 items-center justify-center bg-zinc-900 text-xs font-black text-white">
 
+                            04
 
+                        </span>
 
-                    <div class="grid gap-5 sm:grid-cols-2">
+                        <div>
 
+                            <h2 class="font-black text-zinc-900 dark:text-zinc-100">
 
+                                État
 
-                        {{-- PRIX ACTUEL --}}
+                            </h2>
 
-                        <div>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
 
+                                状態 · Disponibilité
 
+                            </p>
 
-                            <label
+                        </div>
 
-                                for="prix"
+                    </div>
 
-                                class="mb-2 block text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
+                    <div class="grid gap-3 sm:grid-cols-2">
 
-                            >
+                        {{-- DISPONIBLE --}}
 
-                                Prix actuel
+                        <label class="flex cursor-pointer items-center gap-3 border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 p-4">
 
-                            </label>
+                            <input
 
+                                type="checkbox"
 
+                                name="disponible"
 
-                            <div class="relative">
+                                value="1"
 
+                                {{ old(*'disponible',* *'1')* ? *'checked'* : *''* }}
 
+                                class="h-5 w-5 border-2 border-zinc-900 dark:border-zinc-600 text-red-600 focus:ring-red-600"
 
-                                <input
+                            >
 
-                                    id="prix"
+                            <div>
 
-                                    name="prix"
+                                <p class="font-black text-zinc-900 dark:text-zinc-100">
 
-                                    type="number"
+                                    Disponible
 
-                                    step="0.01"
+                                </p>
 
-                                    min="0"
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
 
-                                    value="{{ old('prix') }}"
+                                    L'objet est actuellement en vente.
 
-                                    placeholder="349.90"
+                                </p>
 
-                                    class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 pr-12 text-sm font-black text-zinc-900 dark:text-zinc-100 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
+                            </div>
 
-                                >
+                        </label>
 
+                        {{-- ACHETÉ --}}
 
+                        <label class="flex cursor-pointer items-center gap-3 border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 p-4">
 
-                                <span class="absolute right-4 top-1/2 -translate-y-1/2 font-black text-zinc-400 dark:text-zinc-500">
+                            <input
 
-                                    €
+                                id="achete"
 
-                                </span>
+                                type="checkbox"
 
+                                name="achete"
 
+                                value="1"
 
-                            </div>
+                                {{ old(*'achete')* ? *'checked'* : *''* }}
 
+                                class="h-5 w-5 border-2 border-zinc-900 dark:border-zinc-600 text-red-600 focus:ring-red-600"
 
+                            >
 
-                        </div>
+                            <div>
 
+                                <p class="font-black text-zinc-900 dark:text-zinc-100">
 
+                                    Déjà acheté
 
+                                </p>
 
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
 
-                        {{-- PRIX CIBLE --}}
+                                    Marquer l'objet comme acquis.
 
-                        <div>
+                                </p>
 
+                            </div>
 
+                        </label>
 
-                            <label
+                    </div>
 
-                                for="prix_cible"
+                    {{-- DATE ACHAT --}}
 
-                                class="mb-2 block text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
+                    <div
 
-                            >
+                        id="date-achat-container"
 
-                                Prix cible
+                        class="{{ old('achete') ? '' : 'hidden' }} mt-5"
 
-                            </label>
+                    >
 
+                        <label
 
+                            for="date_achat"
 
-                            <div class="relative">
+                            class="mb-2 block text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
 
+                        >
 
+                            Date d'achat
 
-                                <input
+                        </label>
 
-                                    id="prix_cible"
+                        <input
 
-                                    name="prix_cible"
+                            id="date_achat"
 
-                                    type="number"
+                            name="date_achat"
 
-                                    step="0.01"
+                            type="date"
 
-                                    min="0"
+                            value="{{ old('date_achat') }}"
 
-                                    value="{{ old('prix_cible') }}"
+                            class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-semibold focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500 sm:max-w-xs"
 
-                                    placeholder="280.00"
+                        >
 
-                                    class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 pr-12 text-sm font-black text-zinc-900 dark:text-zinc-100 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
+                    </div>
 
-                                >
+                </section>
 
+                {{-- 05 NOTES --}}
 
+                <section class="p-5 sm:p-7">
 
-                                <span class="absolute right-4 top-1/2 -translate-y-1/2 font-black text-red-600">
+                    <div class="mb-5 flex items-center gap-3">
 
-                                    €
+                        <span class="flex h-8 w-8 items-center justify-center bg-zinc-900 text-xs font-black text-white">
 
-                                </span>
+                            05
 
+                        </span>
 
+                        <div>
 
-                            </div>
+                            <h2 class="font-black text-zinc-900 dark:text-zinc-100">
 
+                                Notes
 
+                            </h2>
 
-                            <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
 
-                                Le prix auquel tu aimerais acheter l'objet.
+                                メモ · Informations supplémentaires
 
-                            </p>
+                            </p>
 
+                        </div>
 
+                    </div>
 
-                        </div>
+                    <textarea
 
+                        id="description"
 
+                        name="description"
 
-                    </div>
+                        rows="5"
 
+                        placeholder="Édition limitée, surveiller le stock, vendeur préféré..."
 
+                        class="w-full resize-y border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-medium text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:text-zinc-500 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
 
-                </section>
+                    >{{ old('description') }}</textarea>
 
+                </section>
 
+                {{-- ACTIONS --}}
 
+                <div class="flex flex-col-reverse gap-3 border-t-2 border-zinc-900 dark:border-zinc-600 bg-[#f7f3eb] p-5 sm:flex-row sm:justify-end">
 
+                    <a
 
-                {{-- 03 IMPORTANCE --}}
+                        href="{{ route('objets.index') }}"
 
-                <section class="border-b-2 border-zinc-900 dark:border-zinc-600 p-5 sm:p-7">
+                        class="inline-flex items-center justify-center border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-5 py-3 text-sm font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100 transition hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:bg-zinc-800"
 
+                    >
 
+                        Annuler
 
-                    <div class="mb-5 flex items-center gap-3">
+                    </a>
 
+                    <button
 
+                        type="submit"
 
-                        <span class="flex h-8 w-8 items-center justify-center bg-zinc-900 text-xs font-black text-white">
+                        class="inline-flex items-center justify-center border-2 border-zinc-900 dark:border-zinc-600 bg-red-600 px-6 py-3 text-sm font-black uppercase tracking-wide text-white shadow-[4px_4px_0_#18181b] dark:shadow-[4px_4px_0_#52525b] transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#18181b] dark:shadow-[6px_6px_0_#52525b]"
 
-                            03
+                    >
 
-                        </span>
+                        Ajouter à la wishlist
 
+                    </button>
 
+                </div>
 
-                        <div>
+            </form>
 
-                            <h2 class="font-black text-zinc-900 dark:text-zinc-100">
+        </div>
 
-                                Priorité
+    </div>
 
-                            </h2>
+    <script>
 
+        document.addEventListener('DOMContentLoaded', function () {
 
+            const achete = document.getElementById('achete');
 
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
+            const dateContainer = document.getElementById('date-achat-container');
 
-                                優先度 · Niveau d'importance
+            achete?.addEventListener('change', function () {
 
-                            </p>
+                dateContainer.classList.toggle('hidden', !this.checked);
 
-                        </div>
+            });
 
+        });
 
-
-                    </div>
-
-
-
-
-
-                    <div class="grid grid-cols-4 gap-2 sm:grid-cols-7">
-
-
-
-                        @foreach (['SSS', 'SS', 'S', 'A', 'B', 'C', 'D'] as $rank)
-
-
-
-                            <label class="cursor-pointer">
-
-
-
-                                <input
-
-                                    type="radio"
-
-                                    name="importance"
-
-                                    value="{{ $rank }}"
-
-                                    class="peer sr-only"
-
-                                    {{ old(*'importance',* *'C')* *===* $rank ? *'checked'* : *''* }}
-
-                                >
-
-
-
-                                <div class="flex h-14 items-center justify-center border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-lg font-black text-zinc-900 dark:text-zinc-100 transition hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:bg-zinc-800 peer-checked:bg-red-600 peer-checked:text-white dark:peer-checked:bg-red-600 dark:peer-checked:text-white">
-
-                                    {{ $rank }}
-
-                                </div>
-
-
-
-                            </label>
-
-
-
-                        @endforeach
-
-
-
-                    </div>
-
-
-
-
-
-                    <div class="mt-3 flex justify-between text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-
-
-
-                        <span>
-
-                            Priorité maximale
-
-                        </span>
-
-
-
-                        <span>
-
-                            Faible priorité
-
-                        </span>
-
-
-
-                    </div>
-
-
-
-                </section>
-
-
-
-
-
-                {{-- 04 ÉTAT --}}
-
-                <section class="border-b-2 border-zinc-900 dark:border-zinc-600 p-5 sm:p-7">
-
-
-
-                    <div class="mb-5 flex items-center gap-3">
-
-
-
-                        <span class="flex h-8 w-8 items-center justify-center bg-zinc-900 text-xs font-black text-white">
-
-                            04
-
-                        </span>
-
-
-
-                        <div>
-
-                            <h2 class="font-black text-zinc-900 dark:text-zinc-100">
-
-                                État
-
-                            </h2>
-
-
-
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
-
-                                状態 · Disponibilité
-
-                            </p>
-
-                        </div>
-
-
-
-                    </div>
-
-
-
-
-
-                    <div class="grid gap-3 sm:grid-cols-2">
-
-
-
-                        {{-- DISPONIBLE --}}
-
-                        <label class="flex cursor-pointer items-center gap-3 border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 p-4">
-
-
-
-                            <input
-
-                                type="checkbox"
-
-                                name="disponible"
-
-                                value="1"
-
-                                {{ old(*'disponible',* *'1')* ? *'checked'* : *''* }}
-
-                                class="h-5 w-5 border-2 border-zinc-900 dark:border-zinc-600 text-red-600 focus:ring-red-600"
-
-                            >
-
-
-
-                            <div>
-
-                                <p class="font-black text-zinc-900 dark:text-zinc-100">
-
-                                    Disponible
-
-                                </p>
-
-
-
-                                <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
-
-                                    L'objet est actuellement en vente.
-
-                                </p>
-
-                            </div>
-
-
-
-                        </label>
-
-
-
-
-
-                        {{-- ACHETÉ --}}
-
-                        <label class="flex cursor-pointer items-center gap-3 border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 p-4">
-
-
-
-                            <input
-
-                                id="achete"
-
-                                type="checkbox"
-
-                                name="achete"
-
-                                value="1"
-
-                                {{ old(*'achete')* ? *'checked'* : *''* }}
-
-                                class="h-5 w-5 border-2 border-zinc-900 dark:border-zinc-600 text-red-600 focus:ring-red-600"
-
-                            >
-
-
-
-                            <div>
-
-                                <p class="font-black text-zinc-900 dark:text-zinc-100">
-
-                                    Déjà acheté
-
-                                </p>
-
-
-
-                                <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
-
-                                    Marquer l'objet comme acquis.
-
-                                </p>
-
-                            </div>
-
-
-
-                        </label>
-
-
-
-                    </div>
-
-
-
-
-
-                    {{-- DATE ACHAT --}}
-
-                    <div
-
-                        id="date-achat-container"
-
-                        class="{{ old('achete') ? '' : 'hidden' }} mt-5"
-
-                    >
-
-
-
-                        <label
-
-                            for="date_achat"
-
-                            class="mb-2 block text-xs font-black uppercase tracking-wider text-zinc-700 dark:text-zinc-300"
-
-                        >
-
-                            Date d'achat
-
-                        </label>
-
-
-
-                        <input
-
-                            id="date_achat"
-
-                            name="date_achat"
-
-                            type="date"
-
-                            value="{{ old('date_achat') }}"
-
-                            class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-semibold focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500 sm:max-w-xs"
-
-                        >
-
-
-
-                    </div>
-
-
-
-                </section>
-
-
-
-
-
-                {{-- 05 NOTES --}}
-
-                <section class="p-5 sm:p-7">
-
-
-
-                    <div class="mb-5 flex items-center gap-3">
-
-
-
-                        <span class="flex h-8 w-8 items-center justify-center bg-zinc-900 text-xs font-black text-white">
-
-                            05
-
-                        </span>
-
-
-
-                        <div>
-
-                            <h2 class="font-black text-zinc-900 dark:text-zinc-100">
-
-                                Notes
-
-                            </h2>
-
-
-
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-500">
-
-                                メモ · Informations supplémentaires
-
-                            </p>
-
-                        </div>
-
-
-
-                    </div>
-
-
-
-
-
-                    <textarea
-
-                        id="description"
-
-                        name="description"
-
-                        rows="5"
-
-                        placeholder="Édition limitée, surveiller le stock, vendeur préféré..."
-
-                        class="w-full resize-y border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-medium text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:text-zinc-500 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
-
-                    >{{ old('description') }}</textarea>
-
-
-
-                </section>
-
-
-
-
-
-                {{-- ACTIONS --}}
-
-                <div class="flex flex-col-reverse gap-3 border-t-2 border-zinc-900 dark:border-zinc-600 bg-[#f7f3eb] p-5 sm:flex-row sm:justify-end">
-
-
-
-                    <a
-
-                        href="{{ route('objets.index') }}"
-
-                        class="inline-flex items-center justify-center border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-5 py-3 text-sm font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100 transition hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:bg-zinc-800"
-
-                    >
-
-                        Annuler
-
-                    </a>
-
-
-
-                    <button
-
-                        type="submit"
-
-                        class="inline-flex items-center justify-center border-2 border-zinc-900 dark:border-zinc-600 bg-red-600 px-6 py-3 text-sm font-black uppercase tracking-wide text-white shadow-[4px_4px_0_#18181b] dark:shadow-[4px_4px_0_#52525b] transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#18181b] dark:shadow-[6px_6px_0_#52525b]"
-
-                    >
-
-                        Ajouter à la wishlist
-
-                    </button>
-
-
-
-                </div>
-
-
-
-            </form>
-
-
-
-        </div>
-
-    </div>
-
-
-
-
-
-    <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
-
-            const achete = document.getElementById('achete');
-
-            const dateContainer = document.getElementById('date-achat-container');
-
-
-
-            achete?.addEventListener('change', function () {
-
-                dateContainer.classList.toggle('hidden', !this.checked);
-
-            });
-
-        });
-
-    </script>
-
-
+    </script>
 
 </x-app-layout>

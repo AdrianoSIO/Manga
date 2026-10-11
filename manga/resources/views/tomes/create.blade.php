@@ -1,671 +1,483 @@
 <x-app-layout>
 
+    <x-slot name="title">
 
+        Ajouter des tomes
 
-    <x-slot name="title">
+    </x-slot>
 
-        Ajouter des tomes
+    <x-slot name="header">
 
-    </x-slot>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
+            <div>
 
+                <p class="text-xs font-bold uppercase tracking-[0.25em] text-red-600">
 
-    <x-slot name="header">
+                    新しい巻
 
+                </p>
 
+                <h1 class="mt-1 text-xl font-black text-gray-900 dark:text-zinc-100 sm:text-2xl">
 
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    Ajouter des tomes
 
+                </h1>
 
+            </div>
 
-            <div>
+            <a
 
-                <p class="text-xs font-bold uppercase tracking-[0.25em] text-red-600">
+                href="{{ route('mangas.create') }}"
 
-                    新しい巻
+                class="flex items-center justify-center rounded-lg
 
-                </p>
+                       border border-gray-300 dark:border-zinc-700 bg-white dark:bg-[#18181b] px-4 py-2.5
 
+                       text-sm font-bold text-gray-700 dark:text-zinc-300 transition
 
+                       hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-600"
 
-                <h1 class="mt-1 text-xl font-black text-gray-900 dark:text-zinc-100 sm:text-2xl">
+            >
 
-                    Ajouter des tomes
+                ＋ Nouvelle licence
 
-                </h1>
+            </a>
 
-            </div>
+        </div>
 
+    </x-slot>
 
+    <div class="py-6 sm:py-10">
 
-            <a
+        <div class="mx-auto max-w-2xl px-3 sm:px-6">
 
-                href="{{ route('mangas.create') }}"
+            {{-- Succès --}}
 
-                class="flex items-center justify-center rounded-lg
+            @if (session('success'))
 
-                       border border-gray-300 dark:border-zinc-700 bg-white dark:bg-[#18181b] px-4 py-2.5
+                <div class="mb-5 rounded-xl border border-green-200
 
-                       text-sm font-bold text-gray-700 dark:text-zinc-300 transition
+                            bg-green-50 p-4 text-sm font-medium text-green-800">
 
-                       hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-600"
+                    {{ session('success') }}
 
-            >
+                </div>
 
-                ＋ Nouvelle licence
+            @endif
 
-            </a>
+            {{-- Erreurs --}}
 
+            @if ($errors->any())
 
+                <div class="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/30">
 
-        </div>
+                    <p class="font-bold text-red-800 dark:text-red-300">
 
+                        Vérifie le formulaire
 
+                    </p>
 
-    </x-slot>
+                    <ul class="mt-2 list-inside list-disc text-sm text-red-700 dark:text-red-300">
 
+                        @foreach ($errors->all() as $error)
 
+                            <li>{{ $error }}</li>
 
+                        @endforeach
 
+                    </ul>
 
-    <div class="py-6 sm:py-10">
+                </div>
 
+            @endif
 
+            <form
 
-        <div class="mx-auto max-w-2xl px-3 sm:px-6">
+                action="{{ route('tomes.store') }}"
 
+                method="POST"
 
+                class="overflow-hidden rounded-xl
 
-            {{-- Succès --}}
+                       border border-gray-200 dark:border-zinc-700 bg-white dark:bg-[#18181b] shadow-sm"
 
-            @if (session('success'))
+            >
 
+                @csrf
 
+                <div class="h-1.5 bg-red-600"></div>
 
-                <div class="mb-5 rounded-xl border border-green-200
+                <div class="space-y-7 p-5 sm:p-8">
 
-                            bg-green-50 p-4 text-sm font-medium text-green-800">
+                    {{-- =========================================
 
-                    {{ session('success') }}
+                        LICENCE
 
-                </div>
+                    ========================================== --}}
 
+                    <div>
 
+                        <label
 
-            @endif
+                            for="manga_id"
 
+                            class="mb-2 block text-sm font-bold text-gray-900 dark:text-zinc-100"
 
+                        >
 
+                            Licence
 
+                        </label>
 
-            {{-- Erreurs --}}
+                        @if ($mangas->isEmpty())
 
-            @if ($errors->any())
+                            <div class="rounded-xl border-2 border-dashed
 
+                                        border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-900 p-6 text-center">
 
+                                <p class="font-bold text-gray-900 dark:text-zinc-100">
 
-                <div class="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/30">
+                                    Aucune licence disponible
 
+                                </p>
 
+                                <p class="mt-2 text-sm text-gray-500 dark:text-zinc-400">
 
-                    <p class="font-bold text-red-800 dark:text-red-300">
+                                    Tu dois créer une licence avant de pouvoir
 
-                        Vérifie le formulaire
+                                    ajouter des tomes.
 
-                    </p>
+                                </p>
 
+                                <a
 
+                                    href="{{ route('mangas.create') }}"
 
-                    <ul class="mt-2 list-inside list-disc text-sm text-red-700 dark:text-red-300">
+                                    class="mt-5 inline-flex items-center
 
+                                           justify-center rounded-lg
 
+                                           bg-red-600 px-5 py-3
 
-                        @foreach ($errors->all() as $error)
+                                           text-sm font-bold text-white
 
-                            <li>{{ $error }}</li>
+                                           transition hover:bg-red-700"
 
-                        @endforeach
+                                >
 
+                                    ＋ Créer une licence
 
+                                </a>
 
-                    </ul>
+                            </div>
 
+                        @else
 
+                            <select
 
-                </div>
+                                id="manga_id"
 
+                                name="manga_id"
 
+                                required
 
-            @endif
+                                class="w-full rounded-xl border-gray-300 dark:border-zinc-700
 
+                                       bg-white text-zinc-900 focus:border-red-500 focus:ring-red-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
 
+                            >
 
+                                <option value="">
 
+                                    Sélectionner une licence
 
-            <form
+                                </option>
 
-                action="{{ route('tomes.store') }}"
+                                @foreach ($mangas as $manga)
 
-                method="POST"
+                                    <option
 
-                class="overflow-hidden rounded-xl
+                                        value="{{ $manga->id }}"
 
-                       border border-gray-200 dark:border-zinc-700 bg-white dark:bg-[#18181b] shadow-sm"
+                                        @selected(
 
-            >
+                                            old(*'manga_id',* request(*'manga'))* *==* $manga->id
 
+                                        )
 
+                                    >
 
-                @csrf
+                                        {{ $manga->titre }}
 
+                                    </option>
 
+                                @endforeach
 
-                <div class="h-1.5 bg-red-600"></div>
+                            </select>
 
+                            @error('manga_id')
 
+                                <p class="mt-2 text-sm font-medium text-red-600">
 
+                                    {{ $message }}
 
+                                </p>
 
-                <div class="space-y-7 p-5 sm:p-8">
+                            @enderror
 
+                            <div class="mt-3">
 
+                                <a
 
-                    {{-- =========================================
+                                    href="{{ route('mangas.create') }}"
 
-                        LICENCE
+                                    class="text-xs font-bold text-red-600
 
-                    ========================================== --}}
+                                           hover:text-red-800 dark:text-red-300"
 
-                    <div>
+                                >
 
+                                    Licence absente ? Crée-la d'abord →
 
+                                </a>
 
-                        <label
+                            </div>
 
-                            for="manga_id"
+                        @endif
 
-                            class="mb-2 block text-sm font-bold text-gray-900 dark:text-zinc-100"
+                    </div>
 
-                        >
+                    {{-- =========================================
 
-                            Licence
+                        NUMÉROS DES TOMES
 
-                        </label>
+                    ========================================== --}}
 
+                    @if ($mangas->isNotEmpty())
 
+                        <div>
 
+                            <label
 
+                                for="numeros"
 
-                        @if ($mangas->isEmpty())
+                                class="mb-2 block text-sm font-bold text-gray-900 dark:text-zinc-100"
 
+                            >
 
+                                Numéro(s) des tomes
 
-                            <div class="rounded-xl border-2 border-dashed
+                            </label>
 
-                                        border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-900 p-6 text-center">
+                            <input
 
+                                id="numeros"
 
+                                name="numeros"
 
-                                <p class="font-bold text-gray-900 dark:text-zinc-100">
+                                type="text"
 
-                                    Aucune licence disponible
+                                required
 
-                                </p>
+                                autocomplete="off"
 
+                                value="{{ old('numeros') }}"
 
+                                placeholder="Ex : 1,2,3,5-10,12"
 
-                                <p class="mt-2 text-sm text-gray-500 dark:text-zinc-400">
+                                class="w-full rounded-xl border-gray-300 dark:border-zinc-700
 
-                                    Tu dois créer une licence avant de pouvoir
+                                       bg-white text-zinc-900 focus:border-red-500 focus:ring-red-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
 
-                                    ajouter des tomes.
+                            >
 
-                                </p>
+                            @error('numeros')
 
+                                <p class="mt-2 text-sm font-medium text-red-600">
 
+                                    {{ $message }}
 
-                                <a
+                                </p>
 
-                                    href="{{ route('mangas.create') }}"
+                            @enderror
 
-                                    class="mt-5 inline-flex items-center
+                            {{-- Exemples --}}
 
-                                           justify-center rounded-lg
+                            <div class="mt-4 rounded-xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900 p-4">
 
-                                           bg-red-600 px-5 py-3
+                                <p class="text-xs font-black uppercase
 
-                                           text-sm font-bold text-white
+                                          tracking-[0.15em] text-gray-700 dark:text-zinc-300">
 
-                                           transition hover:bg-red-700"
+                                    Formats acceptés
 
-                                >
+                                </p>
 
-                                    ＋ Créer une licence
+                                <div class="mt-3 grid gap-2 text-xs text-gray-500 dark:text-zinc-400 sm:grid-cols-2">
 
-                                </a>
+                                    <div class="rounded-lg bg-white dark:bg-[#18181b] p-3">
 
+                                        <p class="font-bold text-gray-800 dark:text-zinc-200">
 
+                                            Un tome
 
-                            </div>
+                                        </p>
 
+                                        <p class="mt-1 font-mono text-red-600">
 
+                                            12
 
-                        @else
+                                        </p>
 
+                                    </div>
 
+                                    <div class="rounded-lg bg-white dark:bg-[#18181b] p-3">
 
-                            <select
+                                        <p class="font-bold text-gray-800 dark:text-zinc-200">
 
-                                id="manga_id"
+                                            Plusieurs tomes
 
-                                name="manga_id"
+                                        </p>
 
-                                required
+                                        <p class="mt-1 font-mono text-red-600">
 
-                                class="w-full rounded-xl border-gray-300 dark:border-zinc-700
+                                            1,2,3,4,5
 
-                                       bg-white text-zinc-900 focus:border-red-500 focus:ring-red-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                                        </p>
 
-                            >
+                                    </div>
 
+                                    <div class="rounded-lg bg-white dark:bg-[#18181b] p-3">
 
+                                        <p class="font-bold text-gray-800 dark:text-zinc-200">
 
-                                <option value="">
+                                            Une série
 
-                                    Sélectionner une licence
+                                        </p>
 
-                                </option>
+                                        <p class="mt-1 font-mono text-red-600">
 
+                                            10-15
 
+                                        </p>
 
-                                @foreach ($mangas as $manga)
+                                    </div>
 
+                                    <div class="rounded-lg bg-white dark:bg-[#18181b] p-3">
 
+                                        <p class="font-bold text-gray-800 dark:text-zinc-200">
 
-                                    <option
+                                            Mélange
 
-                                        value="{{ $manga->id }}"
+                                        </p>
 
-                                        @selected(
+                                        <p class="mt-1 font-mono text-red-600">
 
-                                            old(*'manga_id',* request(*'manga'))* *==* $manga->id
+                                            1,2,5-10,12
 
-                                        )
+                                        </p>
 
-                                    >
+                                    </div>
 
-                                        {{ $manga->titre }}
+                                </div>
 
-                                    </option>
+                            </div>
 
+                            {{-- Doublons --}}
 
+                            <div class="mt-3 rounded-lg border border-red-100 bg-red-50 p-3 dark:border-red-900 dark:bg-red-950/30">
 
-                                @endforeach
+                                <p class="text-xs leading-relaxed text-red-700 dark:text-red-300">
 
+                                    <strong>Doublons autorisés :</strong>
 
+                                    écrire
 
-                            </select>
+                                    <span class="font-mono font-bold">
 
+                                        3,3
 
+                                    </span>
 
+                                    ajoutera deux exemplaires du tome 3.
 
+                                </p>
 
-                            @error('manga_id')
+                            </div>
 
-                                <p class="mt-2 text-sm font-medium text-red-600">
+                            <p class="mt-3 text-xs leading-relaxed text-gray-500 dark:text-zinc-400">
 
-                                    {{ $message }}
+                                Les genres sont automatiquement ceux de la licence sélectionnée.
 
-                                </p>
+                            </p>
 
-                            @enderror
+                        </div>
 
+                        {{-- =========================================
 
+                            ACTIONS
 
+                        ========================================== --}}
 
+                        <div
 
-                            <div class="mt-3">
+                            class="flex flex-col-reverse gap-3
 
+                                   border-t border-gray-100 dark:border-zinc-800 pt-6
 
+                                   sm:flex-row sm:justify-end"
 
-                                <a
+                        >
 
-                                    href="{{ route('mangas.create') }}"
+                            <a
 
-                                    class="text-xs font-bold text-red-600
+                                href="{{ route('collection.index') }}"
 
-                                           hover:text-red-800 dark:text-red-300"
+                                class="flex w-full items-center justify-center
 
-                                >
+                                       rounded-lg px-5 py-3
 
-                                    Licence absente ? Crée-la d'abord →
+                                       text-sm font-bold text-gray-500 dark:text-zinc-400
 
-                                </a>
+                                       transition hover:bg-gray-100 dark:hover:bg-zinc-800
 
+                                       sm:w-auto"
 
+                            >
 
-                            </div>
+                                Annuler
 
+                            </a>
 
+                            <button
 
-                        @endif
+                                type="submit"
 
+                                class="w-full rounded-lg bg-red-600
 
+                                       px-6 py-3 text-sm font-bold
 
-                    </div>
+                                       text-white transition
 
+                                       hover:bg-red-700 sm:w-auto"
 
+                            >
 
+                                Ajouter à ma collection
 
+                            </button>
 
-                    {{-- =========================================
+                        </div>
 
-                        NUMÉROS DES TOMES
+                    @endif
 
-                    ========================================== --}}
+                </div>
 
-                    @if ($mangas->isNotEmpty())
+            </form>
 
+        </div>
 
-
-                        <div>
-
-
-
-                            <label
-
-                                for="numeros"
-
-                                class="mb-2 block text-sm font-bold text-gray-900 dark:text-zinc-100"
-
-                            >
-
-                                Numéro(s) des tomes
-
-                            </label>
-
-
-
-                            <input
-
-                                id="numeros"
-
-                                name="numeros"
-
-                                type="text"
-
-                                required
-
-                                autocomplete="off"
-
-                                value="{{ old('numeros') }}"
-
-                                placeholder="Ex : 1,2,3,5-10,12"
-
-                                class="w-full rounded-xl border-gray-300 dark:border-zinc-700
-
-                                       bg-white text-zinc-900 focus:border-red-500 focus:ring-red-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-
-                            >
-
-
-
-                            @error('numeros')
-
-                                <p class="mt-2 text-sm font-medium text-red-600">
-
-                                    {{ $message }}
-
-                                </p>
-
-                            @enderror
-
-
-
-
-
-                            {{-- Exemples --}}
-
-                            <div class="mt-4 rounded-xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900 p-4">
-
-
-
-                                <p class="text-xs font-black uppercase
-
-                                          tracking-[0.15em] text-gray-700 dark:text-zinc-300">
-
-                                    Formats acceptés
-
-                                </p>
-
-
-
-                                <div class="mt-3 grid gap-2 text-xs text-gray-500 dark:text-zinc-400 sm:grid-cols-2">
-
-
-
-                                    <div class="rounded-lg bg-white dark:bg-[#18181b] p-3">
-
-                                        <p class="font-bold text-gray-800 dark:text-zinc-200">
-
-                                            Un tome
-
-                                        </p>
-
-
-
-                                        <p class="mt-1 font-mono text-red-600">
-
-                                            12
-
-                                        </p>
-
-                                    </div>
-
-
-
-
-
-                                    <div class="rounded-lg bg-white dark:bg-[#18181b] p-3">
-
-                                        <p class="font-bold text-gray-800 dark:text-zinc-200">
-
-                                            Plusieurs tomes
-
-                                        </p>
-
-
-
-                                        <p class="mt-1 font-mono text-red-600">
-
-                                            1,2,3,4,5
-
-                                        </p>
-
-                                    </div>
-
-
-
-
-
-                                    <div class="rounded-lg bg-white dark:bg-[#18181b] p-3">
-
-                                        <p class="font-bold text-gray-800 dark:text-zinc-200">
-
-                                            Une série
-
-                                        </p>
-
-
-
-                                        <p class="mt-1 font-mono text-red-600">
-
-                                            10-15
-
-                                        </p>
-
-                                    </div>
-
-
-
-
-
-                                    <div class="rounded-lg bg-white dark:bg-[#18181b] p-3">
-
-                                        <p class="font-bold text-gray-800 dark:text-zinc-200">
-
-                                            Mélange
-
-                                        </p>
-
-
-
-                                        <p class="mt-1 font-mono text-red-600">
-
-                                            1,2,5-10,12
-
-                                        </p>
-
-                                    </div>
-
-
-
-                                </div>
-
-
-
-                            </div>
-
-
-
-
-
-                            {{-- Doublons --}}
-
-                            <div class="mt-3 rounded-lg border border-red-100 bg-red-50 p-3 dark:border-red-900 dark:bg-red-950/30">
-
-
-
-                                <p class="text-xs leading-relaxed text-red-700 dark:text-red-300">
-
-                                    <strong>Doublons autorisés :</strong>
-
-                                    écrire
-
-                                    <span class="font-mono font-bold">
-
-                                        3,3
-
-                                    </span>
-
-                                    ajoutera deux exemplaires du tome 3.
-
-                                </p>
-
-
-
-                            </div>
-
-
-
-
-
-                            <p class="mt-3 text-xs leading-relaxed text-gray-500 dark:text-zinc-400">
-
-                                Les genres sont automatiquement ceux de la licence sélectionnée.
-
-                            </p>
-
-
-
-                        </div>
-
-
-
-
-
-                        {{-- =========================================
-
-                            ACTIONS
-
-                        ========================================== --}}
-
-                        <div
-
-                            class="flex flex-col-reverse gap-3
-
-                                   border-t border-gray-100 dark:border-zinc-800 pt-6
-
-                                   sm:flex-row sm:justify-end"
-
-                        >
-
-
-
-                            <a
-
-                                href="{{ route('collection.index') }}"
-
-                                class="flex w-full items-center justify-center
-
-                                       rounded-lg px-5 py-3
-
-                                       text-sm font-bold text-gray-500 dark:text-zinc-400
-
-                                       transition hover:bg-gray-100 dark:hover:bg-zinc-800
-
-                                       sm:w-auto"
-
-                            >
-
-                                Annuler
-
-                            </a>
-
-
-
-                            <button
-
-                                type="submit"
-
-                                class="w-full rounded-lg bg-red-600
-
-                                       px-6 py-3 text-sm font-bold
-
-                                       text-white transition
-
-                                       hover:bg-red-700 sm:w-auto"
-
-                            >
-
-                                Ajouter à ma collection
-
-                            </button>
-
-
-
-                        </div>
-
-
-
-                    @endif
-
-
-
-                </div>
-
-
-
-            </form>
-
-
-
-        </div>
-
-
-
-    </div>
-
-
+    </div>
 
 </x-app-layout>

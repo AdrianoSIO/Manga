@@ -1,601 +1,443 @@
 <x-app-layout>
 
+    <x-slot name="title">
 
+        Nouvelle licence
 
-    <x-slot name="title">
+    </x-slot>
 
-        Nouvelle licence
+    <x-slot name="header">
 
-    </x-slot>
+        <div>
 
+            <p class="text-xs font-bold uppercase tracking-[0.25em] text-red-600">
 
+                新しい漫画
 
-    <x-slot name="header">
+            </p>
 
-        <div>
+            <h1 class="mt-1 text-xl font-black text-gray-900 dark:text-zinc-100 sm:text-2xl">
 
-            <p class="text-xs font-bold uppercase tracking-[0.25em] text-red-600">
+                Ajouter une licence
 
-                新しい漫画
+            </h1>
 
-            </p>
+        </div>
 
+    </x-slot>
 
+    <div class="py-6 sm:py-10">
 
-            <h1 class="mt-1 text-xl font-black text-gray-900 dark:text-zinc-100 sm:text-2xl">
+        <div class="mx-auto max-w-2xl px-3 sm:px-6">
 
-                Ajouter une licence
+            {{-- ============================================
 
-            </h1>
+                LICENCES SIMILAIRES
 
-        </div>
+            ============================================= --}}
 
-    </x-slot>
+            @if (session('similar_mangas'))
 
+                <div class="mb-6 overflow-hidden rounded-xl
 
+                            border border-orange-300 bg-orange-50 dark:border-orange-900 dark:bg-orange-950/30">
 
-    <div class="py-6 sm:py-10">
+                    <div class="border-b border-orange-200 dark:border-orange-900 p-4 sm:p-5">
 
+                        <p class="text-xs font-black uppercase
 
+                                  tracking-[0.2em] text-orange-600 dark:text-orange-400">
 
-        <div class="mx-auto max-w-2xl px-3 sm:px-6">
+                            ⚠ Licence similaire détectée
 
+                        </p>
 
+                        <h2 class="mt-2 font-black text-gray-900 dark:text-zinc-100">
 
-            {{-- ============================================
+                            Cette licence existe peut-être déjà
 
-                LICENCES SIMILAIRES
+                        </h2>
 
-            ============================================= --}}
+                        <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400">
 
-            @if (session('similar_mangas'))
+                            Des titres proches ont été trouvés.
 
+                            Vérifie avant de créer un doublon.
 
+                        </p>
 
-                <div class="mb-6 overflow-hidden rounded-xl
+                    </div>
 
-                            border border-orange-300 bg-orange-50 dark:border-orange-900 dark:bg-orange-950/30">
+                    <div class="divide-y divide-orange-200 dark:divide-orange-900">
 
+                        @foreach (session('similar_mangas') as $similar)
 
+                            <div class="flex items-center justify-between
 
-                    <div class="border-b border-orange-200 dark:border-orange-900 p-4 sm:p-5">
+                                        gap-4 p-4">
 
+                                <div class="min-w-0">
 
+                                    <p class="truncate font-bold text-gray-900 dark:text-zinc-100">
 
-                        <p class="text-xs font-black uppercase
+                                        {{ $similar->titre }}
 
-                                  tracking-[0.2em] text-orange-600 dark:text-orange-400">
+                                    </p>
 
-                            ⚠ Licence similaire détectée
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-zinc-400">
 
-                        </p>
+                                        Similarité :
 
+                                        {{ $similar->similarity }} %
 
+                                    </p>
 
-                        <h2 class="mt-2 font-black text-gray-900 dark:text-zinc-100">
+                                </div>
 
-                            Cette licence existe peut-être déjà
+                                <a
 
-                        </h2>
+                                    href="{{ route('collection.show', $similar) }}"
 
+                                    class="shrink-0 rounded-lg border
 
+                                           border-orange-300 bg-white dark:bg-[#18181b]
 
-                        <p class="mt-1 text-sm text-gray-600 dark:text-zinc-400">
+                                           px-3 py-2 text-xs font-bold
 
-                            Des titres proches ont été trouvés.
+                                           text-orange-700 dark:text-orange-300 transition
 
-                            Vérifie avant de créer un doublon.
+                                           hover:bg-orange-100 dark:hover:bg-orange-950/50"
 
-                        </p>
+                                >
 
+                                    Voir
 
+                                </a>
 
-                    </div>
+                            </div>
 
+                        @endforeach
 
+                    </div>
 
-                    <div class="divide-y divide-orange-200 dark:divide-orange-900">
+                </div>
 
+            @endif
 
+            {{-- ============================================
 
-                        @foreach (session('similar_mangas') as $similar)
+                ERREURS
 
+            ============================================= --}}
 
+            @if ($errors->any())
 
-                            <div class="flex items-center justify-between
+                <div class="mb-5 rounded-xl border border-red-200
 
-                                        gap-4 p-4">
+                            bg-red-50 p-4">
 
+                    <p class="font-bold text-red-800 dark:text-red-300">
 
+                        Vérifie le formulaire
 
-                                <div class="min-w-0">
+                    </p>
 
+                    <ul class="mt-2 list-inside list-disc
 
+                               text-sm text-red-700 dark:text-red-300">
 
-                                    <p class="truncate font-bold text-gray-900 dark:text-zinc-100">
+                        @foreach ($errors->all() as $error)
 
-                                        {{ $similar->titre }}
+                            <li>{{ $error }}</li>
 
-                                    </p>
+                        @endforeach
 
+                    </ul>
 
+                </div>
 
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-zinc-400">
+            @endif
 
-                                        Similarité :
+            {{-- ============================================
 
-                                        {{ $similar->similarity }} %
+                FORMULAIRE
 
-                                    </p>
+            ============================================= --}}
 
+            <form
 
+                action="{{ route('mangas.store') }}"
 
-                                </div>
+                method="POST"
 
+                class="overflow-hidden rounded-xl
 
+                       border border-gray-200 dark:border-zinc-700 bg-white dark:bg-[#18181b] shadow-sm"
 
-                                <a
+            >
 
-                                    href="{{ route('collection.show', $similar) }}"
+                @csrf
 
-                                    class="shrink-0 rounded-lg border
+                {{-- Autorisation de créer malgré la similarité --}}
 
-                                           border-orange-300 bg-white dark:bg-[#18181b]
+                @if (session('similar_mangas'))
 
-                                           px-3 py-2 text-xs font-bold
+                    <input
 
-                                           text-orange-700 dark:text-orange-300 transition
+                        type="hidden"
 
-                                           hover:bg-orange-100 dark:hover:bg-orange-950/50"
+                        name="confirm_similar"
 
-                                >
+                        value="1"
 
-                                    Voir
+                    >
 
-                                </a>
+                @endif
 
+                <div class="h-1.5 bg-red-600"></div>
 
+                <div class="space-y-8 p-5 sm:p-8">
 
-                            </div>
+                    {{-- ========================================
 
+                        TITRE
 
+                    ========================================= --}}
 
-                        @endforeach
+                    <div>
 
+                        <label
 
+                            for="titre"
 
-                    </div>
+                            class="mb-2 block text-sm font-bold text-gray-900 dark:text-zinc-100"
 
+                        >
 
+                            Nom de la licence
 
-                </div>
+                        </label>
 
+                        <input
 
+                            id="titre"
 
-            @endif
+                            name="titre"
 
+                            type="text"
 
+                            required
 
+                            maxlength="255"
 
+                            autocomplete="off"
 
-            {{-- ============================================
+                            value="{{ old('titre') }}"
 
-                ERREURS
+                            placeholder="Ex : One Piece"
 
-            ============================================= --}}
+                            class="w-full rounded-xl border-gray-300 dark:border-zinc-700
 
-            @if ($errors->any())
+                                   focus:border-red-500
 
+                                   focus:ring-red-500"
 
+                        >
 
-                <div class="mb-5 rounded-xl border border-red-200
+                        @error('titre')
 
-                            bg-red-50 p-4">
+                            <p class="mt-2 text-sm font-medium text-red-600">
 
+                                {{ $message }}
 
+                            </p>
 
-                    <p class="font-bold text-red-800 dark:text-red-300">
+                        @enderror
 
-                        Vérifie le formulaire
+                        <p class="mt-2 text-xs leading-relaxed text-gray-500 dark:text-zinc-400">
 
-                    </p>
+                            Le nom sera enregistré exactement comme tu
 
+                            l'écris. Une vérification sera effectuée pour
 
+                            détecter les licences ayant un nom similaire.
 
-                    <ul class="mt-2 list-inside list-disc
+                        </p>
 
-                               text-sm text-red-700 dark:text-red-300">
+                    </div>
 
+                    {{-- ========================================
 
+                        GENRES
 
-                        @foreach ($errors->all() as $error)
+                    ========================================= --}}
 
-                            <li>{{ $error }}</li>
+                    <div>
 
-                        @endforeach
+                        <div class="mb-4">
 
+                            <p class="text-sm font-bold text-gray-900 dark:text-zinc-100">
 
+                                Genres
 
-                    </ul>
+                            </p>
 
+                            <p class="mt-1 text-xs text-gray-500 dark:text-zinc-400">
 
+                                Sélectionne tous les genres correspondant
 
-                </div>
+                                au manga.
 
+                            </p>
 
+                        </div>
 
-            @endif
+                        <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
 
+                            @foreach ($genres as $genre)
 
+                                <label class="cursor-pointer">
 
+                                    <input
 
+                                        type="checkbox"
 
-            {{-- ============================================
+                                        name="genres[]"
 
-                FORMULAIRE
+                                        value="{{ $genre->id }}"
 
-            ============================================= --}}
+                                        class="peer sr-only"
 
-            <form
+                                        @checked(
 
-                action="{{ route('mangas.store') }}"
+                                            in_array(
 
-                method="POST"
+                                                $genre->id,
 
-                class="overflow-hidden rounded-xl
+                                                old('genres', [])
 
-                       border border-gray-200 dark:border-zinc-700 bg-white dark:bg-[#18181b] shadow-sm"
+                                            )
 
-            >
+                                        )
 
+                                    >
 
+                                    <div
 
-                @csrf
+                                        class="flex min-h-12 items-center
 
+                                               justify-center rounded-xl
 
+                                               border border-gray-200 dark:border-zinc-700
 
-                {{-- Autorisation de créer malgré la similarité --}}
+                                               bg-white dark:bg-[#18181b] px-3 py-2
 
-                @if (session('similar_mangas'))
+                                               text-center text-xs font-bold
 
-                    <input
+                                               text-gray-600 dark:text-zinc-400 transition
 
-                        type="hidden"
+                                               hover:border-red-300
 
-                        name="confirm_similar"
+                                               peer-checked:border-red-600
 
-                        value="1"
+                                               peer-checked:bg-red-600
 
-                    >
+                                               peer-checked:text-white"
 
-                @endif
+                                    >
 
+                                        {{ $genre->nom }}
 
+                                    </div>
 
-                <div class="h-1.5 bg-red-600"></div>
+                                </label>
 
+                            @endforeach
 
+                        </div>
 
+                        @error('genres')
 
+                            <p class="mt-3 text-sm font-medium text-red-600">
 
-                <div class="space-y-8 p-5 sm:p-8">
+                                {{ $message }}
 
+                            </p>
 
+                        @enderror
 
-                    {{-- ========================================
+                    </div>
 
-                        TITRE
+                    {{-- ========================================
 
-                    ========================================= --}}
+                        ACTIONS
 
-                    <div>
+                    ========================================= --}}
 
+                    <div
 
+                        class="flex flex-col-reverse gap-3
 
-                        <label
+                               border-t border-gray-100 dark:border-zinc-800 pt-6
 
-                            for="titre"
+                               sm:flex-row sm:justify-end"
 
-                            class="mb-2 block text-sm font-bold text-gray-900 dark:text-zinc-100"
+                    >
 
-                        >
+                        <a
 
-                            Nom de la licence
+                            href="{{ route('collection.index') }}"
 
-                        </label>
+                            class="flex w-full items-center justify-center
 
+                                   rounded-lg px-5 py-3
 
+                                   text-sm font-bold text-gray-500 dark:text-zinc-400
 
-                        <input
+                                   transition hover:bg-gray-100 dark:hover:bg-zinc-800
 
-                            id="titre"
+                                   sm:w-auto"
 
-                            name="titre"
+                        >
 
-                            type="text"
+                            Annuler
 
-                            required
+                        </a>
 
-                            maxlength="255"
+                        <button
 
-                            autocomplete="off"
+                            type="submit"
 
-                            value="{{ old('titre') }}"
+                            class="w-full rounded-lg bg-red-600
 
-                            placeholder="Ex : One Piece"
+                                   px-6 py-3 text-sm font-bold
 
-                            class="w-full rounded-xl border-gray-300 dark:border-zinc-700
+                                   text-white transition
 
-                                   focus:border-red-500
+                                   hover:bg-red-700 sm:w-auto"
 
-                                   focus:ring-red-500"
+                        >
 
-                        >
+                            @if (session('similar_mangas'))
 
+                                Créer quand même
 
+                            @else
 
-                        @error('titre')
+                                Créer la licence
 
-                            <p class="mt-2 text-sm font-medium text-red-600">
+                            @endif
 
-                                {{ $message }}
+                        </button>
 
-                            </p>
+                    </div>
 
-                        @enderror
+                </div>
 
+            </form>
 
+        </div>
 
-                        <p class="mt-2 text-xs leading-relaxed text-gray-500 dark:text-zinc-400">
-
-                            Le nom sera enregistré exactement comme tu
-
-                            l'écris. Une vérification sera effectuée pour
-
-                            détecter les licences ayant un nom similaire.
-
-                        </p>
-
-
-
-                    </div>
-
-
-
-
-
-                    {{-- ========================================
-
-                        GENRES
-
-                    ========================================= --}}
-
-                    <div>
-
-
-
-                        <div class="mb-4">
-
-
-
-                            <p class="text-sm font-bold text-gray-900 dark:text-zinc-100">
-
-                                Genres
-
-                            </p>
-
-
-
-                            <p class="mt-1 text-xs text-gray-500 dark:text-zinc-400">
-
-                                Sélectionne tous les genres correspondant
-
-                                au manga.
-
-                            </p>
-
-
-
-                        </div>
-
-
-
-
-
-                        <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
-
-
-
-                            @foreach ($genres as $genre)
-
-
-
-                                <label class="cursor-pointer">
-
-
-
-                                    <input
-
-                                        type="checkbox"
-
-                                        name="genres[]"
-
-                                        value="{{ $genre->id }}"
-
-                                        class="peer sr-only"
-
-                                        @checked(
-
-                                            in_array(
-
-                                                $genre->id,
-
-                                                old('genres', [])
-
-                                            )
-
-                                        )
-
-                                    >
-
-
-
-                                    <div
-
-                                        class="flex min-h-12 items-center
-
-                                               justify-center rounded-xl
-
-                                               border border-gray-200 dark:border-zinc-700
-
-                                               bg-white dark:bg-[#18181b] px-3 py-2
-
-                                               text-center text-xs font-bold
-
-                                               text-gray-600 dark:text-zinc-400 transition
-
-
-
-                                               hover:border-red-300
-
-
-
-                                               peer-checked:border-red-600
-
-                                               peer-checked:bg-red-600
-
-                                               peer-checked:text-white"
-
-                                    >
-
-                                        {{ $genre->nom }}
-
-                                    </div>
-
-
-
-                                </label>
-
-
-
-                            @endforeach
-
-
-
-                        </div>
-
-
-
-                        @error('genres')
-
-                            <p class="mt-3 text-sm font-medium text-red-600">
-
-                                {{ $message }}
-
-                            </p>
-
-                        @enderror
-
-
-
-                    </div>
-
-
-
-
-
-                    {{-- ========================================
-
-                        ACTIONS
-
-                    ========================================= --}}
-
-                    <div
-
-                        class="flex flex-col-reverse gap-3
-
-                               border-t border-gray-100 dark:border-zinc-800 pt-6
-
-                               sm:flex-row sm:justify-end"
-
-                    >
-
-
-
-                        <a
-
-                            href="{{ route('collection.index') }}"
-
-                            class="flex w-full items-center justify-center
-
-                                   rounded-lg px-5 py-3
-
-                                   text-sm font-bold text-gray-500 dark:text-zinc-400
-
-                                   transition hover:bg-gray-100 dark:hover:bg-zinc-800
-
-                                   sm:w-auto"
-
-                        >
-
-                            Annuler
-
-                        </a>
-
-
-
-
-
-                        <button
-
-                            type="submit"
-
-                            class="w-full rounded-lg bg-red-600
-
-                                   px-6 py-3 text-sm font-bold
-
-                                   text-white transition
-
-                                   hover:bg-red-700 sm:w-auto"
-
-                        >
-
-
-
-                            @if (session('similar_mangas'))
-
-                                Créer quand même
-
-                            @else
-
-                                Créer la licence
-
-                            @endif
-
-
-
-                        </button>
-
-
-
-                    </div>
-
-
-
-                </div>
-
-
-
-            </form>
-
-
-
-        </div>
-
-
-
-    </div>
-
-
+    </div>
 
 </x-app-layout>
