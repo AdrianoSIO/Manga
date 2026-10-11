@@ -96,7 +96,7 @@
 
                                text-sm font-medium transition
 
-                               {{ request()->routeIs('collection.\\*')
+                               {{ request()->routeIs('collection.*')
 
                                     ? 'border-red-600 text-zinc-900 dark:text-white'
 
@@ -118,7 +118,7 @@
 
                                text-sm font-medium transition
 
-                               {{ request()->routeIs('tomes.\\*')
+                               {{ request()->routeIs('tomes.*')
 
                                     ? 'border-red-600 text-zinc-900 dark:text-white'
 
@@ -146,7 +146,7 @@
 
                                text-sm font-medium transition
 
-                               {{ request()->routeIs('mangas.\\*')
+                               {{ request()->routeIs('mangas.*')
 
                                     ? 'border-red-600 text-zinc-900 dark:text-white'
 
@@ -174,7 +174,7 @@
 
                                text-sm font-medium transition
 
-                               {{ request()->routeIs('objets.\\*')
+                               {{ request()->routeIs('objets.*')
 
                                     ? 'border-red-600 text-zinc-900 dark:text-white'
 
@@ -256,7 +256,7 @@
 
                 {{-- COMPTE --}}
 
-                <x-dropdown *align*="right" width="48">
+                <x-dropdown align="right" width="48">
 
                     <x-slot name="trigger">
 
@@ -594,7 +594,7 @@
 
                 class="block border-l-4 px-4 py-2 font-medium transition
 
-                       {{ request()->routeIs('collection.\\*')
+                       {{ request()->routeIs('collection.*')
 
                             ? 'border-red-600 bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400'
 
@@ -614,7 +614,7 @@
 
                 class="block border-l-4 px-4 py-2 font-medium transition
 
-                       {{ request()->routeIs('tomes.\\*')
+                       {{ request()->routeIs('tomes.*')
 
                             ? 'border-red-600 bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400'
 
@@ -634,7 +634,7 @@
 
                 class="block border-l-4 px-4 py-2 font-medium transition
 
-                       {{ request()->routeIs('mangas.\\*')
+                       {{ request()->routeIs('mangas.*')
 
                             ? 'border-red-600 bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400'
 
@@ -656,7 +656,7 @@
 
                        border-l-4 px-4 py-2 font-medium transition
 
-                       {{ request()->routeIs('objets.\\*')
+                       {{ request()->routeIs('objets.*')
 
                             ? 'border-red-600 bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400'
 
