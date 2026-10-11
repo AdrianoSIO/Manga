@@ -244,7 +244,7 @@
 
                                 value="{{ old('url') }}"
 
-                                placeholder="https://..."
+                                placeholder="https\://..."
 
                                 class="w-full border-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:text-zinc-500 focus:border-red-600 focus:ring-red-600 dark:focus:border-red-500 dark:focus:ring-red-500"
 
@@ -440,7 +440,7 @@
 
                                     class="peer sr-only"
 
-                                    {{ old(*'importance',* *'C')* *===* $rank ? *'checked'* : *''* }}
+                                    {{ old('importance', 'C') === $rank ? 'checked' : '' }}
 
                                 >
 
@@ -518,7 +518,7 @@
 
                                 value="1"
 
-                                {{ old(*'disponible',* *'1')* ? *'checked'* : *''* }}
+                                {{ old('disponible', '1') ? 'checked' : '' }}
 
                                 class="h-5 w-5 border-2 border-zinc-900 dark:border-zinc-600 text-red-600 focus:ring-red-600"
 
@@ -556,7 +556,7 @@
 
                                 value="1"
 
-                                {{ old(*'achete')* ? *'checked'* : *''* }}
+                                {{ old('achete') ? 'checked' : '' }}
 
                                 class="h-5 w-5 border-2 border-zinc-900 dark:border-zinc-600 text-red-600 focus:ring-red-600"
 
