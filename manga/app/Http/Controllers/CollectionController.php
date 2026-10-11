@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-//Models 
+
 use App\Models\Manga;
+use App\Models\StatCollection;
 use Illuminate\Http\Request;
 
 class CollectionController extends Controller
@@ -29,9 +30,17 @@ class CollectionController extends Controller
             ->orderBy('titre')
             ->get();
 
-        $totalExemplaires = $user->tomes()->count();
+        /*
+        |--------------------------------------------------------------------------
+        | Statistiques depuis la VIEW SQL
+        |--------------------------------------------------------------------------
+        */
 
-        $totalLicences = $mangas->count();
+        $stats = StatCollection::where('user_id', $user->id)
+            ->first();
+
+        $totalLicences = $stats?->total_licences ?? 0;
+        $totalExemplaires = $stats?->total_exemplaires ?? 0;
 
         return view('collection.index', compact(
             'mangas',
