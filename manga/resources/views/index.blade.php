@@ -1,238 +1,857 @@
 <x-app-layout>
 
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
+    {{-- =========================================================
 
-            <h2 class="text-xl font-semibold text-gray-800 dark:text-zinc-100">
-                Ma collection
-            </h2>
+        TITRE DE L'ONGLET
 
-            <a
-                href="{{ route('tomes.create') }}"
-                class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
-            >
-                + Ajouter un tome
-            </a>
+    ========================================================== --}}
 
-        </div>
+    <x-slot name="title">
+
+        Ma collection
+
     </x-slot>
 
+    {{-- =========================================================
 
-    <div class="py-12">
+        HEADER
 
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    ========================================================== --}}
 
+    <x-slot name="header">
 
-            {{-- Message succès --}}
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+            <div>
+
+                <p class="text-xs font-bold uppercase tracking-[0.25em] text-red-600 sm:text-sm">
+
+                    漫画コレクション
+
+                </p>
+
+                <h2 class="mt-1 text-xl font-black text-gray-900 dark:text-zinc-100 sm:text-2xl">
+
+                    Ma collection
+
+                </h2>
+
+            </div>
+
+            {{-- Actions --}}
+
+            <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+
+                {{-- Nouvelle licence --}}
+
+                <a
+
+                    href="{{ route('mangas.create') }}"
+
+                    class="flex w-full items-center justify-center rounded-lg
+
+                           border border-gray-300 dark:border-zinc-700 bg-white dark:bg-[#18181b] px-5 py-3
+
+                           text-sm font-bold text-gray-700 dark:text-zinc-300 transition
+
+                           hover:border-red-300 hover:bg-red-50 hover:text-red-600
+
+                           sm:w-auto sm:py-2.5"
+
+                >
+
+                    <span class="mr-2 text-red-600">＋</span>
+
+                    Nouvelle licence
+
+                </a>
+
+                {{-- Ajouter un tome --}}
+
+                <a
+
+                    href="{{ route('tomes.create') }}"
+
+                    class="flex w-full items-center justify-center rounded-lg
+
+                           bg-red-600 px-5 py-3
+
+                           text-sm font-bold text-white transition
+
+                           hover:bg-red-700
+
+                           sm:w-auto sm:py-2.5"
+
+                >
+
+                    <span class="mr-2">＋</span>
+
+                    Ajouter un tome
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </x-slot>
+
+    {{-- =========================================================
+
+        CONTENU
+
+    ========================================================== --}}
+
+    <div class="py-6 sm:py-10">
+
+        <div class="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
+
+            {{-- =================================================
+
+                MESSAGE DE SUCCÈS
+
+            ================================================== --}}
+
             @if (session('success'))
 
-                <div class="mb-6 rounded-lg bg-green-100 p-4 text-green-800 dark:bg-green-950/40 dark:text-green-300">
+                <div
+
+                    class="mb-5 rounded-xl border border-green-200
+
+                           bg-green-50 p-4 text-sm font-medium text-green-800"
+
+                >
+
                     {{ session('success') }}
+
                 </div>
 
             @endif
 
+            {{-- =================================================
 
-            {{-- Statistiques --}}
-            <div class="mb-8 grid gap-6 md:grid-cols-2">
+                STATISTIQUES
 
-                <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-[#18181b]">
+            ================================================== --}}
 
-                    <p class="text-sm text-gray-500 dark:text-zinc-400">
+            <div class="mb-6 grid grid-cols-2 gap-3 sm:mb-8 sm:gap-4">
+
+                {{-- Licences --}}
+
+                <div
+
+                    class="rounded-xl border border-gray-200 dark:border-zinc-700
+
+                           bg-white dark:bg-[#18181b] p-4 shadow-sm sm:p-6"
+
+                >
+
+                    <p
+
+                        class="text-[11px] font-bold uppercase
+
+                               tracking-wider text-gray-500 dark:text-zinc-400 sm:text-sm"
+
+                    >
+
                         Licences
+
                     </p>
 
-                    <p class="mt-2 text-4xl font-bold text-gray-900 dark:text-zinc-100">
+                    <p class="mt-2 text-3xl font-black text-gray-900 dark:text-zinc-100 sm:text-4xl">
+
                         {{ $totalLicences }}
+
                     </p>
 
                 </div>
 
+                {{-- Tomes --}}
 
-                <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-[#18181b]">
+                <div
 
-                    <p class="text-sm text-gray-500 dark:text-zinc-400">
-                        Tomes physiques
+                    class="rounded-xl border border-gray-200 dark:border-zinc-700
+
+                           bg-white dark:bg-[#18181b] p-4 shadow-sm sm:p-6"
+
+                >
+
+                    <p
+
+                        class="text-[11px] font-bold uppercase
+
+                               tracking-wider text-gray-500 dark:text-zinc-400 sm:text-sm"
+
+                    >
+
+                        Tomes
+
+                        <span class="hidden sm:inline">
+
+                            physiques
+
+                        </span>
+
                     </p>
 
-                    <p class="mt-2 text-4xl font-bold text-gray-900 dark:text-zinc-100">
+                    <p class="mt-2 text-3xl font-black text-red-600 sm:text-4xl">
+
                         {{ $totalExemplaires }}
+
                     </p>
 
                 </div>
 
             </div>
 
+            {{-- =================================================
 
-            {{-- Filtres état --}}
-            <div class="mb-6 flex flex-wrap gap-2">
+                RECHERCHE + FILTRES
 
-                <button
-                    type="button"
-                    data-status-filter="all"
-                    class="status-filter rounded-lg bg-red-600 px-4 py-2 text-sm font-bold text-white"
+            ================================================== --}}
+
+            <section class="mb-8">
+
+                {{-- Recherche --}}
+
+                <div class="relative">
+
+                    <div
+
+                        class="pointer-events-none absolute inset-y-0
+
+                               left-0 flex items-center pl-4"
+
+                    >
+
+                        <svg
+
+                            class="h-5 w-5 text-gray-400 dark:text-zinc-500"
+
+                            viewBox="0 0 24 24"
+
+                            fill="none"
+
+                            stroke="currentColor"
+
+                            stroke-width="2"
+
+                            aria-hidden="true"
+
+                        >
+
+                            <circle cx="11" cy="11" r="8"></circle>
+
+                            <path d="m21 21-4.35-4.35"></path>
+
+                        </svg>
+
+                    </div>
+
+                    <input
+
+                        id="manga-search"
+
+                        type="search"
+
+                        placeholder="Rechercher un manga..."
+
+                        autocomplete="off"
+
+                        class="w-full rounded-xl border border-gray-200 dark:border-zinc-700
+
+                               bg-white dark:bg-[#18181b] py-3 pl-12 pr-4 text-sm
+
+                               text-gray-900 dark:text-zinc-100 shadow-sm outline-none
+
+                               transition placeholder:text-gray-400 dark:text-zinc-500
+
+                               focus:border-red-500 focus:ring-2
+
+                               focus:ring-red-100 dark:focus:ring-red-950"
+
+                    >
+
+                </div>
+
+                {{-- Création de la liste des genres --}}
+
+                @php
+
+                    $genres = $mangas
+
+                        ->flatMap(fn ($manga) => $manga->genres)
+
+                        ->unique('id')
+
+                        ->sortBy('nom');
+
+                @endphp
+
+                {{-- Filtres genres --}}
+
+                <div
+
+                    id="genre-filters"
+
+                    class="mt-4 flex gap-2 overflow-x-auto pb-2"
+
                 >
-                    Toutes
-                </button>
 
-                <button
-                    type="button"
-                    data-status-filter="encours"
-                    class="status-filter rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 dark:border-zinc-700 dark:bg-[#18181b] dark:text-zinc-300"
-                >
-                    ◌ En cours
-                </button>
+                    {{-- Tous --}}
 
-                <button
-                    type="button"
-                    data-status-filter="terminee"
-                    class="status-filter rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 dark:border-zinc-700 dark:bg-[#18181b] dark:text-zinc-300"
-                >
-                    ✓ Terminées
-                </button>
+                    <button
+
+                        type="button"
+
+                        data-genre="all"
+
+                        class="genre-filter shrink-0 rounded-full
+
+                               bg-gray-900 px-4 py-2 text-xs
+
+                               font-bold text-white transition"
+
+                    >
+
+                        Tous
+
+                    </button>
+
+                    {{-- Genres --}}
+
+                    @foreach ($genres as $genre)
+
+                        <button
+
+                            type="button"
+
+                            data-genre="{{ strtolower($genre->nom) }}"
+
+                            class="genre-filter shrink-0 rounded-full
+
+                                   border border-gray-200 dark:border-zinc-700 bg-white dark:bg-[#18181b]
+
+                                   px-4 py-2 text-xs font-bold
+
+                                   text-gray-600 dark:text-zinc-400 transition
+
+                                   hover:border-red-300 hover:text-red-600"
+
+                        >
+
+                            {{ $genre->nom }}
+
+                        </button>
+
+                    @endforeach
+
+                                    <span class="mx-1 h-8 w-px shrink-0 bg-gray-300 dark:bg-zinc-700"></span>
+
+                    <button
+                        type="button"
+                        data-status="encours"
+                        class="status-filter shrink-0 rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-600 transition hover:border-red-300 hover:text-red-600 dark:border-zinc-700 dark:bg-[#18181b] dark:text-zinc-400"
+                    >
+                        ◌ En cours
+                    </button>
+
+                    <button
+                        type="button"
+                        data-status="terminee"
+                        class="status-filter shrink-0 rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-600 transition hover:border-red-300 hover:text-red-600 dark:border-zinc-700 dark:bg-[#18181b] dark:text-zinc-400"
+                    >
+                        ✓ Terminées
+                    </button>
+</div>
+
+                {{-- Infos filtres --}}
+
+                <div class="mt-2 flex items-center justify-between">
+
+                    <p class="text-xs text-gray-400 dark:text-zinc-500">
+
+                        <span id="visible-count">
+
+                            {{ $mangas->count() }}
+
+                        </span>
+
+                        résultat(s)
+
+                    </p>
+
+                    <button
+
+                        id="reset-filters"
+
+                        type="button"
+
+                        class="hidden text-xs font-bold
+
+                               text-red-600 hover:text-red-800"
+
+                    >
+
+                        Réinitialiser
+
+                    </button>
+
+                </div>
+
+            </section>
+
+            {{-- =================================================
+
+                TITRE DE LA COLLECTION
+
+            ================================================== --}}
+
+            <div class="mb-4 flex items-end justify-between gap-4">
+
+                <div>
+
+                    <p
+
+                        class="text-xs font-bold uppercase
+
+                               tracking-[0.2em] text-red-600"
+
+                    >
+
+                        本棚
+
+                    </p>
+
+                    <h2 class="text-lg font-black text-gray-900 dark:text-zinc-100 sm:text-xl">
+
+                        Mes mangas
+
+                    </h2>
+
+                </div>
+
+                <span class="text-xs font-medium text-gray-400 dark:text-zinc-500 sm:text-sm">
+
+                    {{ $totalLicences }}
+
+                    {{ $totalLicences > 1 ? 'licences' : 'licence' }}
+
+                </span>
 
             </div>
 
+            {{-- =================================================
 
-            {{-- Liste mangas --}}
+                GRILLE DES MANGAS
+
+            ================================================== --}}
+
             <div
+
                 id="manga-grid"
-                class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+
+                class="grid grid-cols-1 gap-4
+
+                       sm:grid-cols-2 sm:gap-5
+
+                       lg:grid-cols-3"
+
             >
 
                 @forelse ($mangas as $manga)
 
-                    <div
-                        class="manga-card rounded-xl bg-white p-6 shadow-sm transition hover:shadow-md dark:bg-[#18181b]"
+                    <article
+
+                        class="manga-card group overflow-hidden
+
+                               rounded-xl border border-gray-200 dark:border-zinc-700
+
+                               bg-white dark:bg-[#18181b] shadow-sm transition
+
+                               hover:-translate-y-1
+
+                               hover:border-red-200
+
+                               hover:shadow-lg"
+
+                        data-title="{{ strtolower($manga->titre) }}"
                         data-status="{{ $manga->collection_terminee ? 'terminee' : 'encours' }}"
+
+                        data-genres="{{ $manga->genres
+
+                            ->pluck('nom')
+
+                            ->map(fn ($genre) => strtolower($genre))
+
+                            ->implode('|')
+
+                        }}"
+
                     >
 
-                        <div class="mb-4">
+                        {{-- Barre rouge --}}
+
+                        <div class="h-1.5 bg-red-600"></div>
+
+                        <div class="p-4 sm:p-6">
+
+                            {{-- =================================
+
+                                TITRE DU MANGA
+
+                            ================================== --}}
 
                             <div class="flex items-start justify-between gap-3">
 
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-zinc-100">
+                                <h3
+
+                                    class="min-w-0 break-words text-lg font-black
+
+                                           leading-tight text-gray-900 dark:text-zinc-100 sm:text-xl"
+
+                                >
 
                                     <a
+
                                         href="{{ route('collection.show', $manga) }}"
-                                        class="hover:text-red-600"
+
+                                        class="transition group-hover:text-red-600"
+
                                     >
+
                                         {{ $manga->titre }}
+
                                     </a>
 
                                 </h3>
 
+                                <a
 
-                                {{-- État --}}
-                                @if ($manga->collection_terminee)
+                                    href="{{ route('tomes.create', ['manga' => $manga->id]) }}"
 
-                                    <span class="shrink-0 rounded-full bg-green-100 px-2 py-1 text-xs font-bold text-green-700 dark:bg-green-950/50 dark:text-green-300">
-                                        ✓ Terminée
-                                    </span>
+                                    title="Ajouter un tome de {{ $manga->titre }}"
 
-                                @else
+                                    class="flex h-9 w-9 shrink-0 items-center
 
-                                    <span class="shrink-0 rounded-full bg-gray-100 px-2 py-1 text-xs font-bold text-gray-600 dark:bg-zinc-800 dark:text-zinc-300">
-                                        ◌ En cours
-                                    </span>
+                                           justify-center rounded-lg
 
-                                @endif
+                                           border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800
+
+                                           text-lg font-black text-gray-500 dark:text-zinc-400
+
+                                           transition
+
+                                           hover:border-red-600
+
+                                           hover:bg-red-600
+
+                                           hover:text-white"
+
+                                >
+
+                                    ＋
+
+                                </a>
 
                             </div>
 
+                            {{-- =================================
 
-                            {{-- Genres --}}
-                            <div class="mt-2 flex flex-wrap gap-2">
+                                GENRES
 
-                                @foreach ($manga->genres as $genre)
+                            ================================== --}}
 
-                                    <span class="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600 dark:bg-zinc-800 dark:text-zinc-300">
-                                        {{ $genre->nom }}
+                            @if ($manga->genres->isNotEmpty())
+
+                                <div class="mt-3 flex flex-wrap gap-1.5 sm:gap-2">
+
+                                    @foreach ($manga->genres as $genre)
+
+                                        <span
+
+                                            class="rounded-full bg-gray-100 dark:bg-zinc-800
+
+                                                   px-2.5 py-1 text-[11px]
+
+                                                   font-semibold text-gray-600 dark:text-zinc-400
+
+                                                   sm:px-3 sm:text-xs"
+
+                                        >
+
+                                            {{ $genre->nom }}
+
+                                        </span>
+
+                                    @endforeach
+
+                                </div>
+
+                            @else
+
+                                <p class="mt-3 text-xs text-gray-400 dark:text-zinc-500">
+
+                                    Aucun genre renseigné
+
+                                </p>
+
+                            @endif
+
+                            {{-- ÉTAT DE LA COLLECTION --}}
+                            <div class="mt-4 flex items-center justify-between gap-3">
+                                @if ($manga->collection_terminee)
+                                    <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-700 dark:bg-green-950/50 dark:text-green-300">
+                                        ✓ 完結 · Terminée
+                                    </span>
+                                @else
+                                    <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-black text-gray-600 dark:bg-zinc-800 dark:text-zinc-300">
+                                        ◌ 連載 · En cours
+                                    </span>
+                                @endif
+
+                                <form method="POST" action="{{ route('collection.toggle-terminee', $manga) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="text-[11px] font-bold text-red-600 hover:text-red-800">
+                                        {{ $manga->collection_terminee ? 'Remettre en cours' : 'Marquer terminée' }}
+                                    </button>
+                                </form>
+                            </div>
+
+                            {{-- =================================
+
+                                NOMBRE D'EXEMPLAIRES
+
+                            ================================== --}}
+
+                            <p
+
+                                class="mt-4 text-xs text-gray-500 dark:text-zinc-400
+
+                                       sm:mt-5 sm:text-sm"
+
+                            >
+
+                                <strong class="text-gray-900 dark:text-zinc-100">
+
+                                    {{ $manga->tomes->count() }}
+
+                                </strong>
+
+                                {{ $manga->tomes->count() > 1
+
+                                    ? 'exemplaires'
+
+                                    : 'exemplaire'
+
+                                }}
+
+                            </p>
+
+                            {{-- =================================
+
+                                TOMES
+
+                            ================================== --}}
+
+                            <div class="mt-3 flex flex-wrap gap-1.5 sm:gap-2">
+
+                                @foreach ($manga->tomes as $tome)
+
+                                    @php
+
+                                        $duplicate = $manga
+
+                                            ->tomes
+
+                                            ->where('numero', $tome->numero)
+
+                                            ->count() > 1;
+
+                                    @endphp
+
+                                    <span
+
+                                        class="
+
+                                            flex h-8 min-w-8
+
+                                            items-center justify-center
+
+                                            rounded-md px-2
+
+                                            text-xs font-black text-white
+
+                                            sm:h-9 sm:min-w-9 sm:text-sm
+
+                                            {{ $duplicate
+
+                                                ? 'bg-red-600'
+
+                                                : 'bg-gray-900'
+
+                                            }}
+
+                                        "
+
+                                        title="Tome {{ $tome->numero }}{{ $duplicate ? ' — plusieurs exemplaires' : '' }}"
+
+                                    >
+
+                                        {{ $tome->numero }}
+
                                     </span>
 
                                 @endforeach
 
                             </div>
 
-                        </div>
+                            {{-- =================================
 
+                                LÉGENDE DOUBLONS
 
-                        <p class="mb-3 text-sm text-gray-500 dark:text-zinc-400">
+                            ================================== --}}
 
-                            {{ $manga->tomes->count() }}
+                            @if (
 
-                            {{ $manga->tomes->count() > 1
-                                ? 'exemplaires'
-                                : 'exemplaire'
-                            }}
+                                $manga->tomes
 
-                        </p>
+                                    ->groupBy('numero')
 
+                                    ->contains(fn ($tomes) => $tomes->count() > 1)
 
-                        {{-- Numéros --}}
-                        <div class="flex flex-wrap gap-2">
+                            )
 
-                            @foreach ($manga->tomes as $tome)
+                                <div class="mt-3 flex items-center gap-2">
 
-                                <span class="rounded-lg bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 dark:bg-zinc-800 dark:text-zinc-200">
-                                    {{ $tome->numero }}
-                                </span>
+                                    <span class="h-2 w-2 rounded-full bg-red-600"></span>
 
-                            @endforeach
+                                    <span class="text-[11px] font-medium text-gray-400 dark:text-zinc-500">
 
-                        </div>
+                                        Plusieurs exemplaires
 
+                                    </span>
 
-                        {{-- Changer l'état --}}
-                        <div class="mt-5">
+                                </div>
 
-                            <form
-                                method="POST"
-                                action="{{ route('collection.toggle-terminee', $manga) }}"
+                            @endif
+
+                            {{-- =================================
+
+                                FOOTER
+
+                            ================================== --}}
+
+                            <div
+
+                                class="mt-5 border-t border-gray-100 dark:border-zinc-800
+
+                                       pt-4 sm:mt-6"
+
                             >
-                                @csrf
-                                @method('PATCH')
 
-                                <button
-                                    type="submit"
-                                    class="text-xs font-bold
-                                    {{ $manga->collection_terminee
-                                        ? 'text-green-600 hover:text-green-800'
-                                        : 'text-gray-500 hover:text-red-600'
-                                    }}"
+                                <a
+
+                                    href="{{ route('collection.show', $manga) }}"
+
+                                    class="flex items-center justify-between
+
+                                           text-sm font-bold text-red-600
+
+                                           transition hover:text-red-800"
+
                                 >
-                                    @if ($manga->collection_terminee)
-                                        ✓ Collection terminée
-                                    @else
-                                        ◌ Marquer comme terminée
-                                    @endif
-                                </button>
 
-                            </form>
+                                    <span>
 
-                        </div>
+                                        Voir la collection
 
+                                    </span>
 
-                        <div class="mt-4">
+                                    <span aria-hidden="true">
 
-                            <a
-                                href="{{ route('collection.show', $manga) }}"
-                                class="text-sm font-semibold text-red-600 hover:text-red-800"
-                            >
-                                Voir le manga →
-                            </a>
+                                        →
+
+                                    </span>
+
+                                </a>
+
+                            </div>
 
                         </div>
 
-                    </div>
+                    </article>
 
                 @empty
 
-                    <div class="col-span-full rounded-xl bg-white p-10 text-center shadow-sm dark:bg-[#18181b]">
+                    {{-- =========================================
 
-                        <p class="text-gray-500 dark:text-zinc-400">
-                            Aucun manga dans ta collection.
+                        COLLECTION VIDE
+
+                    ========================================== --}}
+
+                    <div
+
+                        class="col-span-full rounded-xl
+
+                               border-2 border-dashed border-gray-300 dark:border-zinc-700
+
+                               bg-white dark:bg-[#18181b] p-8 text-center sm:p-12"
+
+                    >
+
+                        <div class="text-4xl font-black text-red-600">
+
+                            漫画
+
+                        </div>
+
+                        <h3 class="mt-4 text-lg font-bold text-gray-900 dark:text-zinc-100 sm:text-xl">
+
+                            Collection vide
+
+                        </h3>
+
+                        <p class="mx-auto mt-2 max-w-md text-sm text-gray-500 dark:text-zinc-400">
+
+                            Commence par créer une licence.
+
+                            Tu pourras ensuite ajouter les tomes que tu possèdes.
+
                         </p>
+
+                        <div
+
+                            class="mt-6 flex flex-col justify-center gap-2
+
+                                   sm:flex-row"
+
+                        >
+
+                            <a
+
+                                href="{{ route('mangas.create') }}"
+
+                                class="inline-flex w-full items-center
+
+                                       justify-center rounded-lg
+
+                                       bg-red-600 px-5 py-3
+
+                                       text-sm font-bold text-white
+
+                                       transition hover:bg-red-700
+
+                                       sm:w-auto"
+
+                            >
+
+                                ＋ Ajouter ma première licence
+
+                            </a>
+
+                        </div>
 
                     </div>
 
@@ -240,86 +859,458 @@
 
             </div>
 
+            {{-- =================================================
 
-            {{-- Aucun résultat du filtre --}}
+                AUCUN RÉSULTAT DE RECHERCHE
+
+            ================================================== --}}
+
             <div
-                id="no-status-results"
-                class="mt-6 hidden rounded-xl border-2 border-dashed border-gray-300 p-10 text-center dark:border-zinc-700"
+
+                id="no-results"
+
+                class="mt-4 hidden rounded-xl
+
+                       border-2 border-dashed border-gray-300 dark:border-zinc-700
+
+                       bg-white dark:bg-[#18181b] p-8 text-center sm:p-12"
+
             >
-                <p class="font-bold text-gray-500 dark:text-zinc-400">
-                    Aucune licence dans cette catégorie.
+
+                <div class="text-4xl font-black text-red-600">
+
+                    無
+
+                </div>
+
+                <h3 class="mt-4 text-lg font-black text-gray-900 dark:text-zinc-100 sm:text-xl">
+
+                    Aucun manga trouvé
+
+                </h3>
+
+                <p class="mt-2 text-sm text-gray-500 dark:text-zinc-400">
+
+                    Essaie une autre recherche ou sélectionne un autre genre.
+
                 </p>
+
+                <button
+
+                    id="no-results-reset"
+
+                    type="button"
+
+                    class="mt-5 rounded-lg bg-gray-900
+
+                           px-5 py-2.5 text-sm font-bold
+
+                           text-white transition hover:bg-red-600"
+
+                >
+
+                    Réinitialiser
+
+                </button>
+
             </div>
 
         </div>
 
     </div>
 
+    {{-- =========================================================
+
+        RECHERCHE / FILTRAGE JAVASCRIPT
+
+    ========================================================== --}}
 
     <script>
+
         document.addEventListener('DOMContentLoaded', () => {
 
-            const buttons = document.querySelectorAll('.status-filter');
-            const cards = document.querySelectorAll('.manga-card');
-            const noResults = document.getElementById('no-status-results');
+            const searchInput =
 
-            buttons.forEach(button => {
+                document.getElementById('manga-search');
+
+            const cards =
+
+                [...document.querySelectorAll('.manga-card')];
+
+            const genreButtons =
+
+                [...document.querySelectorAll('.genre-filter')];
+
+            const statusButtons =
+                [...document.querySelectorAll('.status-filter')];
+
+            const visibleCount =
+
+                document.getElementById('visible-count');
+
+            const noResults =
+
+                document.getElementById('no-results');
+
+            const resetButton =
+
+                document.getElementById('reset-filters');
+
+            const noResultsReset =
+
+                document.getElementById('no-results-reset');
+
+            let activeGenre = 'all';
+            let activeStatus = 'all';
+
+            /*
+
+            |--------------------------------------------------------------------------
+
+            | Normalisation
+
+            |--------------------------------------------------------------------------
+
+            |
+
+            | Permet par exemple de rechercher :
+
+            |
+
+            |   attaque
+
+            |
+
+            | et de trouver :
+
+            |
+
+            |   L’attaque des titans
+
+            |
+
+            */
+
+            function normalize(value) {
+
+                return String(value ?? '')
+
+                    .toLowerCase()
+
+                    .normalize('NFD')
+
+                    .replace(/[\u0300-\u036f]/g, '')
+
+                    .trim();
+
+            }
+
+            /*
+
+            |--------------------------------------------------------------------------
+
+            | Filtrage
+
+            |--------------------------------------------------------------------------
+
+            */
+
+            function filterMangas() {
+
+                const search =
+
+                    normalize(searchInput.value);
+
+                let count = 0;
+
+                cards.forEach(card => {
+
+                    const title =
+
+                        normalize(card.dataset.title);
+
+                    const genres =
+
+                        (card.dataset.genres || '')
+
+                            .split('|')
+
+                            .filter(Boolean)
+
+                            .map(normalize);
+
+                    const matchesSearch =
+
+                        title.includes(search);
+
+                    const matchesGenre =
+
+                        activeGenre === 'all'
+
+                        || genres.includes(normalize(activeGenre));
+
+                    const visible =
+
+                        matchesSearch && matchesGenre;
+
+                    card.classList.toggle(
+
+                        'hidden',
+
+                        !visible
+
+                    );
+
+                    if (visible) {
+
+                        count++;
+
+                    }
+
+                });
+
+                /*
+
+                 * Mise à jour compteur
+
+                 */
+
+                visibleCount.textContent = count;
+
+                /*
+
+                 * Aucun résultat
+
+                 */
+
+                noResults.classList.toggle(
+
+                    'hidden',
+
+                    count !== 0 || cards.length === 0
+
+                );
+
+                /*
+
+                 * Bouton reset
+
+                 */
+
+                const filtersActive =
+
+                    search !== ''
+
+                    || activeGenre !== 'all';
+
+                resetButton.classList.toggle(
+
+                    'hidden',
+
+                    !filtersActive
+
+                );
+
+            }
+
+            /*
+
+            |--------------------------------------------------------------------------
+
+            | Recherche instantanée
+
+            |--------------------------------------------------------------------------
+
+            */
+
+            searchInput.addEventListener(
+
+                'input',
+
+                filterMangas
+
+            );
+
+            /*
+
+            |--------------------------------------------------------------------------
+
+            | Filtres genres
+
+            |--------------------------------------------------------------------------
+
+            */
+
+            genreButtons.forEach(button => {
 
                 button.addEventListener('click', () => {
 
-                    const status = button.dataset.statusFilter;
-                    let visible = 0;
+                    activeGenre =
 
-                    cards.forEach(card => {
+                        button.dataset.genre;
 
-                        const show =
-                            status === 'all' ||
-                            card.dataset.status === status;
+                    genreButtons.forEach(item => {
 
-                        card.classList.toggle('hidden', !show);
+                        const active =
 
-                        if (show) {
-                            visible++;
-                        }
-
-                    });
-
-                    noResults.classList.toggle(
-                        'hidden',
-                        visible !== 0
-                    );
-
-                    buttons.forEach(item => {
-
-                        const active = item === button;
+                            item === button;
 
                         item.classList.toggle(
-                            'bg-red-600',
+
+                            'bg-gray-900',
+
                             active
+
                         );
 
                         item.classList.toggle(
+
                             'text-white',
+
                             active
+
                         );
 
-                        item.classList.toggle(
-                            'bg-white',
-                            !active
-                        );
+                        item.classList.toggle('border-gray-200', !active);
 
-                        item.classList.toggle(
-                            'text-gray-700',
-                            !active
-                        );
+                        item.classList.toggle('dark:border-zinc-700', !active);
+
+                        item.classList.toggle('bg-white', !active);
+
+                        item.classList.toggle('dark:bg-[#18181b]', !active);
+
+                        item.classList.toggle('text-gray-600', !active);
+
+                        item.classList.toggle('dark:text-zinc-400', !active);
 
                     });
+
+                    filterMangas();
 
                 });
 
             });
 
+                        /*
+            |--------------------------------------------------------------------------
+            | Filtres état
+            |--------------------------------------------------------------------------
+            */
+            statusButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const status = button.dataset.status;
+                    activeStatus = activeStatus === status ? 'all' : status;
+
+                    statusButtons.forEach(item => {
+                        const active = item.dataset.status === activeStatus;
+                        item.classList.toggle('bg-gray-900', active);
+                        item.classList.toggle('text-white', active);
+                        item.classList.toggle('border-gray-200', !active);
+                        item.classList.toggle('dark:border-zinc-700', !active);
+                        item.classList.toggle('bg-white', !active);
+                        item.classList.toggle('dark:bg-[#18181b]', !active);
+                        item.classList.toggle('text-gray-600', !active);
+                        item.classList.toggle('dark:text-zinc-400', !active);
+                    });
+
+                    filterMangas();
+                });
+            });
+
+/*
+
+            |--------------------------------------------------------------------------
+
+            | Reset
+
+            |--------------------------------------------------------------------------
+
+            */
+
+            function resetFilters() {
+
+                searchInput.value = '';
+
+                activeGenre = 'all';
+                activeStatus = 'all';
+
+                genreButtons.forEach(button => {
+
+                    const active =
+
+                        button.dataset.genre === 'all';
+
+                    button.classList.toggle(
+
+                        'bg-gray-900',
+
+                        active
+
+                    );
+
+                    button.classList.toggle(
+
+                        'text-white',
+
+                        active
+
+                    );
+
+                    button.classList.toggle('border-gray-200', !active);
+
+                    button.classList.toggle('dark:border-zinc-700', !active);
+
+                    button.classList.toggle('bg-white', !active);
+
+                    button.classList.toggle('dark:bg-[#18181b]', !active);
+
+                    button.classList.toggle('text-gray-600', !active);
+
+                    button.classList.toggle('dark:text-zinc-400', !active);
+
+                });
+
+                statusButtons.forEach(button => {
+                    button.classList.remove('bg-gray-900', 'text-white');
+                    button.classList.add('border-gray-200', 'bg-white', 'text-gray-600');
+                });
+
+                filterMangas();
+
+                searchInput.focus();
+
+            }
+
+            resetButton.addEventListener(
+
+                'click',
+
+                resetFilters
+
+            );
+
+            noResultsReset.addEventListener(
+
+                'click',
+
+                resetFilters
+
+            );
+
+            /*
+
+            |--------------------------------------------------------------------------
+
+            | État initial
+
+            |--------------------------------------------------------------------------
+
+            */
+
+            filterMangas();
+
         });
+
     </script>
 
 </x-app-layout>
