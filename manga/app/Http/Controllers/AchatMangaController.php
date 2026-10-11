@@ -8,6 +8,7 @@ use App\Models\Tome;
 use App\Models\TomeRecherche;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class AchatMangaController extends Controller
 {
@@ -32,7 +33,7 @@ class AchatMangaController extends Controller
         return view('achats.index', compact('mangas'));
     }
 
-    public function create(Request $request)
+    public function create()
     {
         $mangas = Manga::orderBy('titre')->get();
 
@@ -42,32 +43,97 @@ class AchatMangaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'manga_id' => ['required', 'exists:mangas,id'],
-            'numero' => ['required', 'integer', 'min:1'],
+            'manga_id' => ['nullable', 'integer', 'exists:mangas,id'],
+            'nouveau_titre' => ['nullable', 'string', 'max:255'],
+            'numeros' => ['required', 'string', 'max:1000'],
         ]);
 
-        $exists = TomeRecherche::where('user_id', $request->user()->id)
-            ->where('manga_id', $validated['manga_id'])
-            ->where('numero', $validated['numero'])
-            ->exists();
+        /*
+        |--------------------------------------------------------------------------
+        | Licence
+        |--------------------------------------------------------------------------
+        |
+        | Soit l'utilisateur choisit une licence existante,
+        | soit il écrit directement une nouvelle licence.
+        |
+        */
 
-        if ($exists) {
-            return back()
-                ->withInput()
-                ->withErrors([
-                    'numero' => 'Ce tome est déjà dans ta liste d’achats.',
-                ]);
+        if (!empty($validated['manga_id'])) {
+            $manga = Manga::findOrFail($validated['manga_id']);
+        } elseif (!empty($validated['nouveau_titre'])) {
+            $titre = trim($validated['nouveau_titre']);
+
+            // Évite de créer deux fois exactement la même licence.
+            $manga = Manga::firstOrCreate([
+                'titre' => $titre,
+            ]);
+        } else {
+            throw ValidationException::withMessages([
+                'nouveau_titre' => 'Choisis une licence existante ou indique le nom d’une nouvelle licence.',
+            ]);
         }
 
-        TomeRecherche::create([
-            'user_id' => $request->user()->id,
-            'manga_id' => $validated['manga_id'],
-            'numero' => $validated['numero'],
-        ]);
+        /*
+        |--------------------------------------------------------------------------
+        | Numéros de tomes
+        |--------------------------------------------------------------------------
+        |
+        | Formats acceptés :
+        | 1
+        | 1,2,5
+        | 1-5
+        | 1-3,7,10-12
+        |
+        */
+
+        $numeros = $this->parseNumeros($validated['numeros']);
+
+        if (empty($numeros)) {
+            throw ValidationException::withMessages([
+                'numeros' => 'Entre au moins un numéro de tome valide.',
+            ]);
+        }
+
+        if (count($numeros) > 200) {
+            throw ValidationException::withMessages([
+                'numeros' => 'Tu peux ajouter au maximum 200 tomes à la fois.',
+            ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Ajout dans la liste d'achats
+        |--------------------------------------------------------------------------
+        */
+
+        $ajoutes = 0;
+
+        foreach ($numeros as $numero) {
+            $tome = TomeRecherche::firstOrCreate([
+                'user_id' => $request->user()->id,
+                'manga_id' => $manga->id,
+                'numero' => $numero,
+            ]);
+
+            if ($tome->wasRecentlyCreated) {
+                $ajoutes++;
+            }
+        }
+
+        if ($ajoutes === 0) {
+            return redirect()
+                ->route('achats.show', $manga)
+                ->with('success', 'Ces tomes étaient déjà dans ta liste d’achats.');
+        }
 
         return redirect()
-            ->route('achats.index')
-            ->with('success', 'Tome ajouté à la liste d’achats.');
+            ->route('achats.show', $manga)
+            ->with(
+                'success',
+                $ajoutes > 1
+                    ? "{$ajoutes} tomes ajoutés à ta liste d’achats."
+                    : 'Tome ajouté à ta liste d’achats.'
+            );
     }
 
     public function show(Request $request, Manga $manga)
@@ -84,8 +150,10 @@ class AchatMangaController extends Controller
         return view('achats.show', compact('manga', 'tomes'));
     }
 
-    public function storeOffre(Request $request, TomeRecherche $tomeRecherche)
-    {
+    public function storeOffre(
+        Request $request,
+        TomeRecherche $tomeRecherche
+    ) {
         $this->authorizeTome($request, $tomeRecherche);
 
         $validated = $request->validate([
@@ -105,19 +173,26 @@ class AchatMangaController extends Controller
         return back()->with('success', 'Offre ajoutée.');
     }
 
-    public function destroyOffre(Request $request, OffreTome $offre)
-    {
+    public function destroyOffre(
+        Request $request,
+        OffreTome $offre
+    ) {
         $offre->load('tomeRecherche');
 
-        $this->authorizeTome($request, $offre->tomeRecherche);
+        $this->authorizeTome(
+            $request,
+            $offre->tomeRecherche
+        );
 
         $offre->delete();
 
         return back()->with('success', 'Offre supprimée.');
     }
 
-    public function acheter(Request $request, TomeRecherche $tomeRecherche)
-    {
+    public function acheter(
+        Request $request,
+        TomeRecherche $tomeRecherche
+    ) {
         $this->authorizeTome($request, $tomeRecherche);
 
         $mangaId = $tomeRecherche->manga_id;
@@ -132,33 +207,132 @@ class AchatMangaController extends Controller
             $tomeRecherche->delete();
         });
 
-        $reste = TomeRecherche::where('user_id', $request->user()->id)
+        $reste = TomeRecherche::where(
+            'user_id',
+            $request->user()->id
+        )
             ->where('manga_id', $mangaId)
             ->exists();
 
         if (!$reste) {
             return redirect()
                 ->route('collection.show', $mangaId)
-                ->with('success', 'Licence complétée dans ta liste d’achats. Tome ajouté à ta collection.');
+                ->with(
+                    'success',
+                    'Tome ajouté à ta collection.'
+                );
         }
 
-        return back()->with('success', 'Tome ajouté à ta collection.');
+        return back()->with(
+            'success',
+            'Tome ajouté à ta collection.'
+        );
     }
 
-    public function destroy(Request $request, TomeRecherche $tomeRecherche)
-    {
+    public function destroy(
+        Request $request,
+        TomeRecherche $tomeRecherche
+    ) {
         $this->authorizeTome($request, $tomeRecherche);
 
         $tomeRecherche->delete();
 
-        return back()->with('success', 'Tome retiré de la liste d’achats.');
+        return back()->with(
+            'success',
+            'Tome retiré de la liste d’achats.'
+        );
     }
 
-    private function authorizeTome(Request $request, TomeRecherche $tomeRecherche): void
-    {
+    private function authorizeTome(
+        Request $request,
+        TomeRecherche $tomeRecherche
+    ): void {
         abort_unless(
             $tomeRecherche->user_id === $request->user()->id,
             403
         );
+    }
+
+    private function parseNumeros(string $input): array
+    {
+        $input = str_replace(' ', '', $input);
+
+        $parties = explode(',', $input);
+
+        $numeros = [];
+
+        foreach ($parties as $partie) {
+            if ($partie === '') {
+                continue;
+            }
+
+            /*
+             * Tome simple :
+             * 1
+             */
+            if (preg_match('/^\d+$/', $partie)) {
+                $numero = (int) $partie;
+
+                if ($numero < 1) {
+                    throw ValidationException::withMessages([
+                        'numeros' => 'Le numéro du tome doit être supérieur à 0.',
+                    ]);
+                }
+
+                $numeros[] = $numero;
+
+                continue;
+            }
+
+            /*
+             * Intervalle :
+             * 1-5
+             */
+            if (
+                preg_match(
+                    '/^(\d+)-(\d+)$/',
+                    $partie,
+                    $matches
+                )
+            ) {
+                $debut = (int) $matches[1];
+                $fin = (int) $matches[2];
+
+                if ($debut < 1 || $fin < 1) {
+                    throw ValidationException::withMessages([
+                        'numeros' => 'Les numéros de tomes doivent être supérieurs à 0.',
+                    ]);
+                }
+
+                if ($debut > $fin) {
+                    throw ValidationException::withMessages([
+                        'numeros' => "Intervalle invalide : {$partie}.",
+                    ]);
+                }
+
+                if (($fin - $debut) > 200) {
+                    throw ValidationException::withMessages([
+                        'numeros' => "Intervalle trop grand : {$partie}.",
+                    ]);
+                }
+
+                foreach (range($debut, $fin) as $numero) {
+                    $numeros[] = $numero;
+                }
+
+                continue;
+            }
+
+            throw ValidationException::withMessages([
+                'numeros' => "Format invalide : {$partie}.",
+            ]);
+        }
+
+        // Évite par exemple 1,1,2,2
+        $numeros = array_values(array_unique($numeros));
+
+        sort($numeros);
+
+        return $numeros;
     }
 }
