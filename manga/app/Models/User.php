@@ -38,4 +38,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function objets(): HasMany
+    {
+    return $this->hasMany(Objet::class);
+    }
 }

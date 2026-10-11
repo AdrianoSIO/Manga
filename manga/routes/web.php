@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\MangaController;
+use App\Http\Controllers\ObjetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TomeController;
 use Illuminate\Support\Facades\Route;
@@ -40,7 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tomes/create', [TomeController::class, 'create'])
         ->name('tomes.create');
 
-    // Ajouter un exemplaire
+    // Ajouter un ou plusieurs exemplaires
     Route::post('/tomes', [TomeController::class, 'store'])
         ->name('tomes.store');
 
@@ -62,6 +63,37 @@ Route::middleware('auth')->group(function () {
     // Enregistrer la nouvelle licence
     Route::post('/licences', [MangaController::class, 'store'])
         ->name('mangas.store');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Wishlist
+    |--------------------------------------------------------------------------
+    */
+
+    // Liste des objets suivis
+    Route::get('/wishlist', [ObjetController::class, 'index'])
+        ->name('objets.index');
+
+    // Formulaire nouvel objet
+    Route::get('/wishlist/create', [ObjetController::class, 'create'])
+        ->name('objets.create');
+
+    // Enregistrer un nouvel objet
+    Route::post('/wishlist', [ObjetController::class, 'store'])
+        ->name('objets.store');
+
+    // Formulaire de modification
+    Route::get('/wishlist/{objet}/edit', [ObjetController::class, 'edit'])
+        ->name('objets.edit');
+
+    // Enregistrer les modifications
+    Route::patch('/wishlist/{objet}', [ObjetController::class, 'update'])
+        ->name('objets.update');
+
+    // Supprimer un objet
+    Route::delete('/wishlist/{objet}', [ObjetController::class, 'destroy'])
+        ->name('objets.destroy');
 
 
     /*
