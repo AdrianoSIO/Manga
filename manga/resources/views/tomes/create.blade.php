@@ -200,11 +200,7 @@
 
                                         value="{{ $manga->id }}"
 
-                                        @selected(
-
-                                            old(*'manga_id',* request(*'manga'))* *==* $manga->id
-
-                                        )
+                                        @selected(old('manga_id', request('manga')) == $manga->id)
 
                                     >
 
