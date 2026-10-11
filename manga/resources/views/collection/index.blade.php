@@ -459,6 +459,7 @@
                                hover:shadow-lg"
 
                         data-title="{{ strtolower($manga->titre) }}"
+                        data-status="{{ $manga->collection_terminee ? 'terminee' : 'encours' }}"
 
                         data-genres="{{ $manga->genres
 
@@ -579,6 +580,34 @@
                                 </p>
 
                             @endif
+
+                            {-- =================================
+                                ÉTAT DE LA COLLECTION
+                            ================================== --}
+
+                            <div class="mt-4">
+                                <form method="POST" action="{{ route('collection.toggle-terminee', $manga) }}">
+                                    @csrf
+                                    @method('PATCH')
+
+                                    <button
+                                        type="submit"
+                                        class="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-black uppercase transition
+                                            {{ $manga->collection_terminee
+                                                ? 'border-green-600 bg-green-600 text-white hover:bg-green-700'
+                                                : 'border-zinc-300 bg-zinc-50 text-zinc-700 hover:border-red-500 hover:text-red-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300'
+                                            }}"
+                                    >
+                                        @if ($manga->collection_terminee)
+                                            <span>✓</span>
+                                            <span>完結 · Terminée</span>
+                                        @else
+                                            <span>◌</span>
+                                            <span>連載 · En cours</span>
+                                        @endif
+                                    </button>
+                                </form>
+                            </div>
 
                             {{-- =================================
 
@@ -1129,12 +1158,15 @@
                         );
 
                         item.classList.toggle('border-gray-200', !active);
+
                         item.classList.toggle('dark:border-zinc-700', !active);
 
                         item.classList.toggle('bg-white', !active);
+
                         item.classList.toggle('dark:bg-[#18181b]', !active);
 
                         item.classList.toggle('text-gray-600', !active);
+
                         item.classList.toggle('dark:text-zinc-400', !active);
 
                     });
@@ -1184,12 +1216,15 @@
                     );
 
                     button.classList.toggle('border-gray-200', !active);
+
                     button.classList.toggle('dark:border-zinc-700', !active);
 
                     button.classList.toggle('bg-white', !active);
+
                     button.classList.toggle('dark:bg-[#18181b]', !active);
 
                     button.classList.toggle('text-gray-600', !active);
+
                     button.classList.toggle('dark:text-zinc-400', !active);
 
                 });

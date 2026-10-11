@@ -66,4 +66,28 @@ class CollectionController extends Controller
             'tomes'
         ));
     }
+
+    /**
+     * Passe une licence de "En cours" à "Terminée"
+     * ou de "Terminée" à "En cours".
+     */
+    public function toggleTerminee(Request $request, Manga $manga)
+    {
+        $possedeManga = $manga->tomes()
+            ->where('user_id', $request->user()->id)
+            ->exists();
+
+        abort_unless($possedeManga, 403);
+
+        $manga->update([
+            'collection_terminee' => !$manga->collection_terminee,
+        ]);
+
+        return back()->with(
+            'success',
+            $manga->collection_terminee
+                ? 'Collection marquée comme terminée.'
+                : 'Collection remise en cours.'
+        );
+    }
 }

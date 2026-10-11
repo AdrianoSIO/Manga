@@ -28,6 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/collection/{manga}', [CollectionController::class, 'show'])
         ->name('collection.show');
 
+    Route::patch(
+        '/collection/{manga}/terminee',
+        [CollectionController::class, 'toggleTerminee']
+    )->name('collection.toggle-terminee');
+
 
     /*
     |--------------------------------------------------------------------------
@@ -98,20 +103,30 @@ Route::middleware('auth')->group(function () {
     Route::post('/achats-manga', [AchatMangaController::class, 'store'])
         ->name('achats.store');
 
-    Route::get('/achats-manga/licence/{manga}', [AchatMangaController::class, 'show'])
-        ->name('achats.show');
+    Route::get(
+        '/achats-manga/licence/{manga}',
+        [AchatMangaController::class, 'show']
+    )->name('achats.show');
 
-    Route::post('/achats-manga/{tomeRecherche}/offres', [AchatMangaController::class, 'storeOffre'])
-        ->name('achats.offres.store');
+    Route::post(
+        '/achats-manga/{tomeRecherche}/offres',
+        [AchatMangaController::class, 'storeOffre']
+    )->name('achats.offres.store');
 
-    Route::delete('/achats-manga/offres/{offre}', [AchatMangaController::class, 'destroyOffre'])
-        ->name('achats.offres.destroy');
+    Route::delete(
+        '/achats-manga/offres/{offre}',
+        [AchatMangaController::class, 'destroyOffre']
+    )->name('achats.offres.destroy');
 
-    Route::post('/achats-manga/{tomeRecherche}/acheter', [AchatMangaController::class, 'acheter'])
-        ->name('achats.acheter');
+    Route::post(
+        '/achats-manga/{tomeRecherche}/acheter',
+        [AchatMangaController::class, 'acheter']
+    )->name('achats.acheter');
 
-    Route::delete('/achats-manga/{tomeRecherche}', [AchatMangaController::class, 'destroy'])
-        ->name('achats.destroy');
+    Route::delete(
+        '/achats-manga/{tomeRecherche}',
+        [AchatMangaController::class, 'destroy']
+    )->name('achats.destroy');
 
 
     /*

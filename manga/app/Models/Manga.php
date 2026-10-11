@@ -10,6 +10,11 @@ class Manga extends Model
 {
     protected $fillable = [
         'titre',
+        'collection_terminee',
+    ];
+
+    protected $casts = [
+        'collection_terminee' => 'boolean',
     ];
 
     public function tomes(): HasMany
