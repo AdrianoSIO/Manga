@@ -22,6 +22,11 @@ class Manga extends Model
         return $this->hasMany(Tome::class);
     }
 
+    public function tomesRecherches(): HasMany
+    {
+        return $this->hasMany(TomeRecherche::class);
+    }
+
     public function genres(): BelongsToMany
     {
         return $this->belongsToMany(Genre::class, 'genre_manga');
