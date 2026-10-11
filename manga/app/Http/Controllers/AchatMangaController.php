@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Genre;
 use App\Models\Manga;
 use App\Models\OffreTome;
 use App\Models\Tome;
@@ -36,8 +37,9 @@ class AchatMangaController extends Controller
     public function create()
     {
         $mangas = Manga::orderBy('titre')->get();
+        $genres = Genre::orderBy('nom')->get();
 
-        return view('achats.create', compact('mangas'));
+        return view('achats.create', compact('mangas', 'genres'));
     }
 
     public function store(Request $request)
@@ -46,45 +48,35 @@ class AchatMangaController extends Controller
             'manga_id' => ['nullable', 'integer', 'exists:mangas,id'],
             'nouveau_titre' => ['nullable', 'string', 'max:255'],
             'numeros' => ['required', 'string', 'max:1000'],
+            'genres' => ['nullable', 'array'],
+            'genres.*' => ['integer', 'exists:genres,id'],
         ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | Licence
-        |--------------------------------------------------------------------------
-        |
-        | Soit l'utilisateur choisit une licence existante,
-        | soit il écrit directement une nouvelle licence.
-        |
-        */
 
         if (!empty($validated['manga_id'])) {
             $manga = Manga::findOrFail($validated['manga_id']);
         } elseif (!empty($validated['nouveau_titre'])) {
+            if (empty($validated['genres'])) {
+                throw ValidationException::withMessages([
+                    'genres' => 'Sélectionne au moins un genre pour une nouvelle licence.',
+                ]);
+            }
+
             $titre = trim($validated['nouveau_titre']);
 
-            // Évite de créer deux fois exactement la même licence.
-            $manga = Manga::firstOrCreate([
-                'titre' => $titre,
-            ]);
+            $manga = Manga::where('titre', $titre)->first();
+
+            if (!$manga) {
+                $manga = Manga::create([
+                    'titre' => $titre,
+                ]);
+
+                $manga->genres()->sync($validated['genres']);
+            }
         } else {
             throw ValidationException::withMessages([
                 'nouveau_titre' => 'Choisis une licence existante ou indique le nom d’une nouvelle licence.',
             ]);
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Numéros de tomes
-        |--------------------------------------------------------------------------
-        |
-        | Formats acceptés :
-        | 1
-        | 1,2,5
-        | 1-5
-        | 1-3,7,10-12
-        |
-        */
 
         $numeros = $this->parseNumeros($validated['numeros']);
 
@@ -100,30 +92,34 @@ class AchatMangaController extends Controller
             ]);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Ajout dans la liste d'achats
-        |--------------------------------------------------------------------------
-        */
-
         $ajoutes = 0;
 
-        foreach ($numeros as $numero) {
-            $tome = TomeRecherche::firstOrCreate([
-                'user_id' => $request->user()->id,
-                'manga_id' => $manga->id,
-                'numero' => $numero,
-            ]);
+        DB::transaction(function () use (
+            $request,
+            $manga,
+            $numeros,
+            &$ajoutes
+        ) {
+            foreach ($numeros as $numero) {
+                $tome = TomeRecherche::firstOrCreate([
+                    'user_id' => $request->user()->id,
+                    'manga_id' => $manga->id,
+                    'numero' => $numero,
+                ]);
 
-            if ($tome->wasRecentlyCreated) {
-                $ajoutes++;
+                if ($tome->wasRecentlyCreated) {
+                    $ajoutes++;
+                }
             }
-        }
+        });
 
         if ($ajoutes === 0) {
             return redirect()
                 ->route('achats.show', $manga)
-                ->with('success', 'Ces tomes étaient déjà dans ta liste d’achats.');
+                ->with(
+                    'success',
+                    'Ces tomes étaient déjà dans ta liste d’achats.'
+                );
         }
 
         return redirect()
@@ -197,7 +193,10 @@ class AchatMangaController extends Controller
 
         $mangaId = $tomeRecherche->manga_id;
 
-        DB::transaction(function () use ($request, $tomeRecherche) {
+        DB::transaction(function () use (
+            $request,
+            $tomeRecherche
+        ) {
             Tome::create([
                 'user_id' => $request->user()->id,
                 'manga_id' => $tomeRecherche->manga_id,
@@ -266,10 +265,6 @@ class AchatMangaController extends Controller
                 continue;
             }
 
-            /*
-             * Tome simple :
-             * 1
-             */
             if (preg_match('/^\d+$/', $partie)) {
                 $numero = (int) $partie;
 
@@ -284,10 +279,6 @@ class AchatMangaController extends Controller
                 continue;
             }
 
-            /*
-             * Intervalle :
-             * 1-5
-             */
             if (
                 preg_match(
                     '/^(\d+)-(\d+)$/',
@@ -328,7 +319,6 @@ class AchatMangaController extends Controller
             ]);
         }
 
-        // Évite par exemple 1,1,2,2
         $numeros = array_values(array_unique($numeros));
 
         sort($numeros);
