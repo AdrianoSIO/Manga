@@ -39,7 +39,6 @@ class TomeController extends Controller
             ]);
         }
 
-        // Protection contre une saisie accidentellement énorme.
         if (count($numeros) > 200) {
             throw ValidationException::withMessages([
                 'numeros' => 'Tu peux ajouter au maximum 200 tomes à la fois.',
@@ -73,18 +72,75 @@ class TomeController extends Controller
             403
         );
 
+        $mangaId = $tome->manga_id;
+        $userId = $request->user()->id;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Suppression de l'exemplaire physique
+        |--------------------------------------------------------------------------
+        |
+        | On supprime uniquement le Tome.
+        | Le Manga reste en base, notamment s'il est encore utilisé
+        | dans la liste d'achats.
+        |
+        */
         $tome->delete();
 
-        return back()->with(
-            'success',
-            'Exemplaire supprimé de ta collection.'
-        );
+        /*
+        |--------------------------------------------------------------------------
+        | Vérifie s'il reste des tomes physiques
+        |--------------------------------------------------------------------------
+        */
+        $resteDesTomes = Tome::where('user_id', $userId)
+            ->where('manga_id', $mangaId)
+            ->exists();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Il reste des tomes
+        |--------------------------------------------------------------------------
+        |
+        | La licence appartient toujours à la collection physique.
+        |
+        */
+        if ($resteDesTomes) {
+            return redirect()
+                ->route('collection.show', $mangaId)
+                ->with(
+                    'success',
+                    'Exemplaire supprimé de ta collection.'
+                );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | C'était le dernier tome
+        |--------------------------------------------------------------------------
+        |
+        | On revient à la collection générale.
+        |
+        | IMPORTANT :
+        | on ne supprime PAS le Manga.
+        | Il peut encore être référencé par tomes_recherches.
+        |
+        */
+        return redirect()
+            ->route('collection.index')
+            ->with(
+                'success',
+                'Dernier exemplaire supprimé de ta collection.'
+            );
     }
 
     private function parseNumeros(string $input): array
     {
-        // Autorise les espaces :
-        // "1, 2, 5-8"
+        // Autorise :
+        // 1
+        // 1,2,5
+        // 1-5
+        // 1-3,7,10-12
+
         $input = str_replace(' ', '', $input);
 
         $parties = explode(',', $input);
@@ -92,32 +148,46 @@ class TomeController extends Controller
         $numeros = [];
 
         foreach ($parties as $partie) {
-
             if ($partie === '') {
                 continue;
             }
 
             /*
-             * Numéro simple
-             *
-             * Exemple :
-             * 5
-             */
+            |--------------------------------------------------------------------------
+            | Numéro simple
+            |--------------------------------------------------------------------------
+            */
             if (preg_match('/^\d+$/', $partie)) {
-                $numeros[] = (int) $partie;
+                $numero = (int) $partie;
+
+                if ($numero < 1) {
+                    throw ValidationException::withMessages([
+                        'numeros' => 'Le numéro du tome doit être supérieur à 0.',
+                    ]);
+                }
+
+                $numeros[] = $numero;
+
                 continue;
             }
 
             /*
-             * Intervalle
-             *
-             * Exemple :
-             * 10-15
-             */
+            |--------------------------------------------------------------------------
+            | Intervalle
+            |--------------------------------------------------------------------------
+            |
+            | Exemple : 10-15
+            |
+            */
             if (preg_match('/^(\d+)-(\d+)$/', $partie, $matches)) {
-
                 $debut = (int) $matches[1];
                 $fin = (int) $matches[2];
+
+                if ($debut < 1 || $fin < 1) {
+                    throw ValidationException::withMessages([
+                        'numeros' => 'Les numéros de tomes doivent être supérieurs à 0.',
+                    ]);
+                }
 
                 if ($debut > $fin) {
                     throw ValidationException::withMessages([
@@ -125,7 +195,6 @@ class TomeController extends Controller
                     ]);
                 }
 
-                // Évite par exemple 1-999999
                 if (($fin - $debut) > 200) {
                     throw ValidationException::withMessages([
                         'numeros' => "Intervalle trop grand : {$partie}.",
@@ -139,14 +208,23 @@ class TomeController extends Controller
                 continue;
             }
 
-            /*
-             * Si ce n'est ni un numéro,
-             * ni un intervalle.
-             */
             throw ValidationException::withMessages([
                 'numeros' => "Format invalide : {$partie}.",
             ]);
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Nettoyage
+        |--------------------------------------------------------------------------
+        |
+        | Exemple :
+        | 1,2,2,3 → 1,2,3
+        |
+        */
+        $numeros = array_values(array_unique($numeros));
+
+        sort($numeros);
 
         return $numeros;
     }
