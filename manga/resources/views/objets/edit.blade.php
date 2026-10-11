@@ -406,7 +406,7 @@
 
                                     class="peer sr-only"
 
-                                    {{ old(*'importance',* $objet->importance) === $rank ? 'checked' : '' }}
+                                    {{ old('importance', $objet->importance) === $rank ? 'checked' : '' }}
 
                                 >
 
@@ -472,7 +472,7 @@
 
                                 value="1"
 
-                                {{ old(*'disponible',* $objet->disponible) ? 'checked' : '' }}
+                                {{ old('disponible', $objet->disponible) ? 'checked' : '' }}
 
                                 class="h-5 w-5 border-2 border-zinc-900 dark:border-zinc-600 text-red-600 focus:ring-red-600"
 
@@ -510,7 +510,7 @@
 
                                 value="1"
 
-                                {{ old(*'achete',* $objet->achete) ? 'checked' : '' }}
+                                {{ old('achete', $objet->achete) ? 'checked' : '' }}
 
                                 class="h-5 w-5 border-2 border-zinc-900 dark:border-zinc-600 text-red-600 focus:ring-red-600"
 
