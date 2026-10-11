@@ -229,18 +229,39 @@ class AchatMangaController extends Controller
     }
 
     public function destroy(
-        Request $request,
-        TomeRecherche $tomeRecherche
-    ) {
-        $this->authorizeTome($request, $tomeRecherche);
+    Request $request,
+    TomeRecherche $tomeRecherche
+) {
+    $this->authorizeTome($request, $tomeRecherche);
 
-        $tomeRecherche->delete();
+    $mangaId = $tomeRecherche->manga_id;
+    $userId = $request->user()->id;
 
-        return back()->with(
+    $tomeRecherche->delete();
+
+    $reste = TomeRecherche::where('user_id', $userId)
+        ->where('manga_id', $mangaId)
+        ->exists();
+
+    // C'était le dernier tome recherché de cette licence.
+    // La page achats.show n'a donc plus rien à afficher.
+    if (!$reste) {
+        return redirect()
+            ->route('achats.index')
+            ->with(
+                'success',
+                'Dernier tome retiré de la liste d’achats.'
+            );
+    }
+
+    // Il reste encore des tomes recherchés.
+    return redirect()
+        ->route('achats.show', $mangaId)
+        ->with(
             'success',
             'Tome retiré de la liste d’achats.'
         );
-    }
+}
 
     private function authorizeTome(
         Request $request,
