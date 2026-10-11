@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+//Models 
 use App\Models\Manga;
 use Illuminate\Http\Request;
 
