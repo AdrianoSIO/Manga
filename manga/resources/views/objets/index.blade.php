@@ -627,185 +627,73 @@
     </div>
 
     {{-- Recherche + filtres --}}
-
     <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
-
+        document.addEventListener('DOMContentLoaded', () => {
             const search = document.getElementById('wishlist-search');
-
-            const items = document.querySelectorAll('.wishlist-item');
-
+            const items = [...document.querySelectorAll('.wishlist-item')];
             const empty = document.getElementById('wishlist-empty-search');
+            const rankButtons = [...document.querySelectorAll('.rank-filter')];
+            const statusButtons = [...document.querySelectorAll('.status-filter')];
 
             let selectedRank = 'all';
-
             let selectedStatus = 'all';
 
-            function normalize(value) {
+            const normalize = value => (value || '')
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
 
-                return value
-
-                    .toLowerCase()
-
-                    .normalize('NFD')
-
-                    .replace(/[\u0300-\u036f]/g, '');
-
+            function setActive(buttons, activeButton) {
+                buttons.forEach(button => {
+                    const active = button === activeButton;
+                    button.classList.toggle('bg-zinc-900', active);
+                    button.classList.toggle('text-white', active);
+                    button.classList.toggle('bg-white', !active);
+                    button.classList.toggle('dark:bg-zinc-900', !active);
+                    button.classList.toggle('text-zinc-900', !active);
+                    button.classList.toggle('dark:text-zinc-100', !active);
+                });
             }
 
             function refresh() {
-
-                const query = normalize(search?.value || '');
-
+                const query = normalize(search?.value);
                 let visible = 0;
 
                 items.forEach(item => {
+                    const matchesSearch = !query || normalize(item.dataset.name).includes(query);
+                    const matchesRank = selectedRank === 'all' || item.dataset.rank === selectedRank;
+                    const matchesStatus = selectedStatus === 'all' || item.dataset.status === selectedStatus;
+                    const show = matchesSearch && matchesRank && matchesStatus;
 
-                    const name = normalize(item.dataset.name || '');
-
-                    const rank = item.dataset.rank;
-
-                    const status = item.dataset.status;
-
-                    const matchesSearch =
-
-                        !query || name.includes(query);
-
-                    const matchesRank =
-
-                        selectedRank === 'all'
-
-                        || rank === selectedRank;
-
-                    const matchesStatus =
-
-                        selectedStatus === 'all'
-
-                        || status === selectedStatus;
-
-                    const show =
-
-                        matchesSearch
-
-                        && matchesRank
-
-                        && matchesStatus;
-
-                    item.classList.toggle('hidden', !show);
-
-                    if (show) {
-
-                        visible++;
-
-                    }
-
+                    item.style.display = show ? '' : 'none';
+                    if (show) visible++;
                 });
 
                 if (empty) {
-
-                    empty.classList.toggle('hidden', visible !== 0);
-
+                    empty.style.display = visible === 0 ? '' : 'none';
                 }
-
             }
 
             search?.addEventListener('input', refresh);
 
-            document.querySelectorAll('.rank-filter').forEach(button => {
-
-                button.addEventListener('click', function () {
-
-                    selectedRank = this.dataset.rank;
-
-                    document
-
-                        .querySelectorAll('.rank-filter')
-
-                        .forEach(btn => {
-
-                            btn.classList.remove(
-
-                                'bg-zinc-900',
-
-                                'text-white'
-
-                            );
-
-                            btn.classList.add(
-
-                                'bg-white dark:bg-zinc-900',
-
-                                'text-zinc-900 dark:text-zinc-100'
-
-                            );
-
-                        });
-
-                    this.classList.remove(
-
-                        'bg-white dark:bg-zinc-900',
-
-                        'text-zinc-900 dark:text-zinc-100'
-
-                    );
-
-                    this.classList.add(
-
-                        'bg-zinc-900',
-
-                        'text-white'
-
-                    );
-
+            rankButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    selectedRank = button.dataset.rank || 'all';
+                    setActive(rankButtons, button);
                     refresh();
-
                 });
-
             });
 
-            document.querySelectorAll('.status-filter').forEach(button => {
-
-                button.addEventListener('click', function () {
-
-                    selectedStatus = this.dataset.status;
-
-                    document
-
-                        .querySelectorAll('.status-filter')
-
-                        .forEach(btn => {
-
-                            btn.classList.remove(
-
-                                'bg-zinc-900',
-
-                                'text-white'
-
-                            );
-
-                            btn.classList.add('bg-white');
-
-                        });
-
-                    this.classList.remove('bg-white');
-
-                    this.classList.add(
-
-                        'bg-zinc-900',
-
-                        'text-white'
-
-                    );
-
+            statusButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    selectedStatus = button.dataset.status || 'all';
+                    setActive(statusButtons, button);
                     refresh();
-
                 });
-
             });
 
+            refresh();
         });
-
     </script>
 
 </x-app-layout>
