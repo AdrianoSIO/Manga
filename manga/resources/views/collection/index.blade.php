@@ -1865,6 +1865,14 @@
 
 
 
+            const statusButtons =
+
+
+
+                [...document.querySelectorAll('.status-filter')];
+
+
+
             const visibleCount =
 
 
