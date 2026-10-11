@@ -597,8 +597,6 @@
                                 </p>
 
                             @endif
-
-                            {{-- ÉTAT DE LA COLLECTION --}}
                             <div class="mt-4 flex items-center justify-between gap-3">
                                 @if ($manga->collection_terminee)
                                     <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-black text-green-700 dark:bg-green-950/50 dark:text-green-300">
