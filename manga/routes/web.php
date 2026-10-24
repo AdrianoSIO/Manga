@@ -5,6 +5,7 @@ use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\MangaController;
 use App\Http\Controllers\ObjetController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjetController;
 use App\Http\Controllers\TomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -127,6 +128,50 @@ Route::middleware('auth')->group(function () {
         '/achats-manga/{tomeRecherche}',
         [AchatMangaController::class, 'destroy']
     )->name('achats.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Projets
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/projets', [ProjetController::class, 'index'])
+        ->name('projets.index');
+
+    Route::get('/projets/creer', [ProjetController::class, 'create'])
+        ->name('projets.create');
+
+    Route::post('/projets', [ProjetController::class, 'store'])
+        ->name('projets.store');
+
+    Route::get('/projets/{projet}', [ProjetController::class, 'show'])
+        ->name('projets.show');
+
+    Route::delete('/projets/{projet}', [ProjetController::class, 'destroy'])
+        ->name('projets.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Possibilités des projets
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/projets/{projet}/possibilites',
+        [ProjetController::class, 'storePossibilite']
+    )->name('projets.possibilites.store');
+
+    Route::patch(
+        '/projets/{projet}/possibilites/{possibilite}',
+        [ProjetController::class, 'updatePossibilite']
+    )->name('projets.possibilites.update');
+
+    Route::delete(
+        '/projets/{projet}/possibilites/{possibilite}',
+        [ProjetController::class, 'destroyPossibilite']
+    )->name('projets.possibilites.destroy');
 
 
     /*
