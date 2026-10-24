@@ -9,12 +9,6 @@ use App\Http\Controllers\ProjetController;
 use App\Http\Controllers\TomeController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Routes protégées
-|--------------------------------------------------------------------------
-*/
-
 Route::middleware('auth')->group(function () {
 
     /*
@@ -34,7 +28,6 @@ Route::middleware('auth')->group(function () {
         [CollectionController::class, 'toggleTerminee']
     )->name('collection.toggle-terminee');
 
-
     /*
     |--------------------------------------------------------------------------
     | Tomes
@@ -50,7 +43,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tomes/{tome}', [TomeController::class, 'destroy'])
         ->name('tomes.destroy');
 
-
     /*
     |--------------------------------------------------------------------------
     | Licences
@@ -62,7 +54,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/licences', [MangaController::class, 'store'])
         ->name('mangas.store');
-
 
     /*
     |--------------------------------------------------------------------------
@@ -87,7 +78,6 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/wishlist/{objet}', [ObjetController::class, 'destroy'])
         ->name('objets.destroy');
-
 
     /*
     |--------------------------------------------------------------------------
@@ -129,6 +119,21 @@ Route::middleware('auth')->group(function () {
         [AchatMangaController::class, 'destroy']
     )->name('achats.destroy');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Types de projet
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/projets/types',
+        [ProjetController::class, 'storeType']
+    )->name('projets.types.store');
+
+    Route::delete(
+        '/projets/types/{typeProjet}',
+        [ProjetController::class, 'destroyType']
+    )->name('projets.types.destroy');
 
     /*
     |--------------------------------------------------------------------------
@@ -148,13 +153,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/projets/{projet}', [ProjetController::class, 'show'])
         ->name('projets.show');
 
-    Route::delete('/projets/{projet}', [ProjetController::class, 'destroy'])
-        ->name('projets.destroy');
+    Route::get(
+        '/projets/{projet}/modifier',
+        [ProjetController::class, 'edit']
+    )->name('projets.edit');
 
+    Route::patch(
+        '/projets/{projet}',
+        [ProjetController::class, 'update']
+    )->name('projets.update');
+
+    Route::delete(
+        '/projets/{projet}',
+        [ProjetController::class, 'destroy']
+    )->name('projets.destroy');
 
     /*
     |--------------------------------------------------------------------------
-    | Possibilités des projets
+    | Possibilités
     |--------------------------------------------------------------------------
     */
 
@@ -162,6 +178,11 @@ Route::middleware('auth')->group(function () {
         '/projets/{projet}/possibilites',
         [ProjetController::class, 'storePossibilite']
     )->name('projets.possibilites.store');
+
+    Route::get(
+        '/projets/{projet}/possibilites/{possibilite}/modifier',
+        [ProjetController::class, 'editPossibilite']
+    )->name('projets.possibilites.edit');
 
     Route::patch(
         '/projets/{projet}/possibilites/{possibilite}',
@@ -173,6 +194,47 @@ Route::middleware('auth')->group(function () {
         [ProjetController::class, 'destroyPossibilite']
     )->name('projets.possibilites.destroy');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Catégories de projet
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/projets/{projet}/possibilites/{possibilite}/categories',
+        [ProjetController::class, 'storeCategorie']
+    )->name('projets.categories.store');
+
+    Route::delete(
+        '/projets/{projet}/possibilites/{possibilite}/categories/{categorie}',
+        [ProjetController::class, 'destroyCategorie']
+    )->name('projets.categories.destroy');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Éléments de projet
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/projets/{projet}/possibilites/{possibilite}/categories/{categorie}/elements',
+        [ProjetController::class, 'storeElement']
+    )->name('projets.elements.store');
+
+    Route::patch(
+        '/projets/{projet}/possibilites/{possibilite}/categories/{categorie}/elements/{element}',
+        [ProjetController::class, 'updateElement']
+    )->name('projets.elements.update');
+
+    Route::patch(
+        '/projets/{projet}/possibilites/{possibilite}/categories/{categorie}/elements/{element}/selection',
+        [ProjetController::class, 'toggleElement']
+    )->name('projets.elements.toggle');
+
+    Route::delete(
+        '/projets/{projet}/possibilites/{possibilite}/categories/{categorie}/elements/{element}',
+        [ProjetController::class, 'destroyElement']
+    )->name('projets.elements.destroy');
 
     /*
     |--------------------------------------------------------------------------
@@ -190,7 +252,6 @@ Route::middleware('auth')->group(function () {
         ->name('profile.destroy');
 });
 
-
 /*
 |--------------------------------------------------------------------------
 | Dashboard
@@ -202,12 +263,5 @@ Route::get('/dashboard', function () {
 })
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
-
-
-/*
-|--------------------------------------------------------------------------
-| Auth
-|--------------------------------------------------------------------------
-*/
 
 require __DIR__.'/auth.php';

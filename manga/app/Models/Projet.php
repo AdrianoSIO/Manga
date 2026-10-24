@@ -12,6 +12,7 @@ class Projet extends Model
         'user_id',
         'nom',
         'description',
+        'type',
         'budget',
         'date_debut',
         'date_fin',
