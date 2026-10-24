@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PossibiliteProjet extends Model
@@ -25,16 +26,12 @@ class PossibiliteProjet extends Model
         return $this->hasMany(CategorieProjet::class);
     }
 
-    use Illuminate\Database\Eloquent\Relations\HasOne;
-
-// ...
-
     public function budget(): HasOne
     {
-    return $this->hasOne(
-        BudgetPossibilite::class,
-        'possibilite_id',
-        'id'
-    );
+        return $this->hasOne(
+            BudgetPossibilite::class,
+            'possibilite_id',
+            'id'
+        );
     }
 }
